@@ -1,0 +1,10 @@
+load("@crates//:defs.bzl", "aliases", "all_crate_deps", "crate_edition")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
+
+rust_binary(
+    name = "zero2pro",
+    srcs = ["src/main.rs"],
+    aliases = aliases(),
+    edition = crate_edition(),
+    deps = all_crate_deps(normal = True),
+)
