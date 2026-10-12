@@ -3,6 +3,7 @@ target/
 
 # Bazel output symlinks
 bazel-*
+!notes/bazel/*
 
 # Editors / OS
 .idea/
