@@ -1,0 +1,18 @@
+load("@crates//:defs.bzl", "aliases", "all_crate_deps", "crate_edition")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_test")
+
+rust_binary(
+    name = "hello-world",
+    srcs = ["src/main.rs"],
+    aliases = aliases(),
+    edition = crate_edition(),
+    deps = all_crate_deps(normal = True),
+)
+
+rust_test(
+    name = "hello-world-test",
+    crate = ":hello-world",
+    aliases = aliases(normal_dev = True),
+    edition = crate_edition(),
+    deps = all_crate_deps(normal_dev = True),
+)

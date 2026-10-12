@@ -1,0 +1,27 @@
+module(
+    name = "mono",
+    version = "0.0.0",
+)
+
+bazel_dep(name = "rules_rust", version = "0.74.0")
+
+# Rust toolchain
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2024",
+    versions = ["1.99.0"],
+)
+use_repo(rust, "rust_toolchains")
+register_toolchains("@rust_toolchains//:all")
+
+# Third-party Rust crates, resolved from the root Cargo workspace.
+crate = use_extension("@rules_rust//crate_universe:extensions.bzl", "crate")
+crate.from_cargo(
+    name = "crates",
+    cargo_lockfile = "//:Cargo.lock",
+    manifests = [
+        "//:Cargo.toml",
+        "//learn/rust/hello-world:Cargo.toml",
+    ],
+)
+use_repo(crate, "crates")
