@@ -1,5 +1,6 @@
 use std::io;   // prelude - bring the io type from the standard library
 use rand::Rng; // Rng trait defined methods that random number generators implement
+use std::cmp::Ordering;
 
 fn main() {
     println!("Guess the number!");
@@ -16,6 +17,11 @@ fn main() {
     io::stdin()
         .read_line(&mut guess) // pass the mutable reference to guess
         .expect("Failed to read line"); // handle the Err of the read_line enum
+
+
+    // shadowed variable guess
+    // convert a string into a u32 number
+    let guess: u32 = guess.trim().parse().expect("Please type a number!");
 
     println!("You guessed: {guess}");  // interpolate {guess} into the message
 
