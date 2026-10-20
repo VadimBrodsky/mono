@@ -10,25 +10,27 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(1..=10);
     println!("The secret number is: {secret_number}");
 
-    // the ::new is an associated function on the String type
-    let mut guess = String::new(); // mutable variable declaration
+    loop {
+        // the ::new is an associated function on the String type
+        let mut guess = String::new(); // mutable variable declaration
 
-    // if we did not import std::io, could still call it via std::io::Stdin
-    io::stdin()
-        .read_line(&mut guess) // pass the mutable reference to guess
-        .expect("Failed to read line"); // handle the Err of the read_line enum
+        // if we did not import std::io, could still call it via std::io::Stdin
+        io::stdin()
+            .read_line(&mut guess) // pass the mutable reference to guess
+            .expect("Failed to read line"); // handle the Err of the read_line enum
 
 
-    // shadowed variable guess
-    // convert a string into a u32 number
-    let guess: u32 = guess.trim().parse().expect("Please type a number!");
+        // shadowed variable guess
+        // convert a string into a u32 number
+        let guess: u32 = guess.trim().parse().expect("Please type a number!");
 
-    println!("You guessed: {guess}");  // interpolate {guess} into the message
+        println!("You guessed: {guess}");  // interpolate {guess} into the message
 
-    // pattern matching
-    match guess.cmp(&secret_number) {
-        Ordering::Less => println!("Too small!"),
-        Ordering::Greater => println!("Too big!"),
-        Ordering::Equal => println!("You win!"),
+        // pattern matching
+        match guess.cmp(&secret_number) {
+            Ordering::Less => println!("Too small!"),
+            Ordering::Greater => println!("Too big!"),
+            Ordering::Equal => println!("You win!"),
+        }
     }
 }
