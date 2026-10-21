@@ -4,13 +4,14 @@ use std::cmp::Ordering;
 
 fn main() {
     println!("Guess the number!");
-    println!("Please input your guess.");
 
     // get an OS thread random number in an inclusive range
     let secret_number = rand::thread_rng().gen_range(1..=10);
-    println!("The secret number is: {secret_number}");
+    // println!("The secret number is: {secret_number}");
 
     loop {
+        println!("Please input your guess.");
+
         // the ::new is an associated function on the String type
         let mut guess = String::new(); // mutable variable declaration
 
@@ -22,7 +23,10 @@ fn main() {
 
         // shadowed variable guess
         // convert a string into a u32 number
-        let guess: u32 = guess.trim().parse().expect("Please type a number!");
+        let guess: u32 = match guess.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
 
         println!("You guessed: {guess}");  // interpolate {guess} into the message
 
@@ -30,7 +34,10 @@ fn main() {
         match guess.cmp(&secret_number) {
             Ordering::Less => println!("Too small!"),
             Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => println!("You win!"),
+            Ordering::Equal => {
+                println!("You win!");
+                break;                    // exit the loop
+            }
         }
     }
 }
