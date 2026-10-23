@@ -1,0 +1,3 @@
+ - [[Elm]] has only 2 boolean values, they are similar to JavaScript, with a few differences.
+- You write `True` and `False` instead of `true` and `false`
+- JavaScript has a concept of truthiness, where conditionals can be values other than `true` and `false`. Elm does not have that, conditionals can be either `True` or `False`.

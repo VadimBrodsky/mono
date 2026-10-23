@@ -1,0 +1,9 @@
+- ETH EVM dev clients
+	- [go-ethereum Official Go implementation of the Ethereum protocol](https://geth.ethereum.org/)
+	- [Alchemy](https://www.alchemy.com/ethereum)
+	- [Infura](https://www.infura.io/)
+- Reference
+	- [JSON-RPC API](https://ethereum.org/en/developers/docs/apis/json-rpc/)
+	- [Ethereum Yellow Paper: a formal specification of Ethereum, a programmable blockchain](https://ethereum.github.io/yellowpaper/paper.pdf)
+- Resources
+	- [Defi Academy - Online courses to become a Defi Developer](https://www.defi-academy.com/)

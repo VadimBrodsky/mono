@@ -1,0 +1,1 @@
+Kubernetes namespaces divide Kubernetes clusters into virtual clusters called, Namespaces.

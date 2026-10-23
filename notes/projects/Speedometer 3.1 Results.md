@@ -1,0 +1,4 @@
+- Minisforum - 22.5
+- Raspberry Pi 5 - 5.36
+- iPad Pro - 26.2
+- iPhone Air - 39.5

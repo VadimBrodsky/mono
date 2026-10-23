@@ -1,0 +1,18 @@
+- [[logseq]] keyboard shortcuts
+	- `t t` - toggle theme, light <-> dark
+	- `t l` - toggle left sidebar
+	- `t r` - toggle right sidebar
+	- `t o` - toggle outline
+	- `t d` - toggle document mode
+	- `g h` - go home
+	- `cmd + shift + j` - sidebar journal
+	- `cmd + k` - open search bar
+		- `enter` - open
+		- `shift + enter` - open in the sidebar
+	- `tab` - indent
+	- `shift + tab` - unindent
+	- `cmd + shift + up` - move up
+	- `cmd + shift + down` - move down
+	- `cmd + left arrow` - move to beginning of line
+	- `cmd + right arrow` - move to end of line
+	- `shift + click + link` - open link in sidebar

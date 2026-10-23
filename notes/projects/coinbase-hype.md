@@ -1,0 +1,54 @@
+- # 2023
+	- ## 00 - Template
+	  collapsed:: true
+		- ### TDD and P/PS
+			- Link
+				- #### Involvements
+				- #### Collaborators
+				- #### Description
+				- #### Major Decisions
+				- #### Related PRs
+		- ### Other Documents (some less formal)
+		- ### Interesting PRs
+			- Link
+				- #### Description
+				- #### Involvement - Reviewer / Author
+		- ### Other interesting work
+			- Presentations - Link
+			- Slack Thread - Screenshot
+			- Cross-Team involvement
+			- Mentoring
+			- Value Provided
+	- ## 02 - February
+		- ### TDD and P/PS
+			- [TDD: USDC Add Cash / Cash Out Flow](https://docs.google.com/document/d/1nokkiklOaU9g7pzOFUOPJ0nFLIJUerlgkH4AMexmpUM/edit#heading=h.s1he7jgsod48)
+				- #### Involvements
+					- Authored the majority of the architecture
+				- #### Collaborators
+					- [[Nate Jackman]]
+				- #### Description
+					- Seemed simple initially but scope grew due to BE complexity around Cash Out
+				- #### Major Decisions
+					- Decided to implement the currency picker regardless of the launch of the simple trade UI redesign
+				- #### Related PRs
+					- [[CSTBL-6] USDC Cash-In Quick Action / Upsell #18313](https://github.cbhq.net/consumer/react-native/pull/18313)
+		- ### Other Documents (some less formal)
+			- [USDC Papercuts](https://docs.google.com/document/d/1bohfUoOdOBwuNIWNLyC5_kV7Fuhv1C1-r0jnh36Aink/edit#heading=h.t5ynqmk9jsqx)
+			- [USDC Add-Cash Dogfooding](https://docs.google.com/document/d/15Y5-Fs3Am0iKPnPPjmrbSHfpwKXczBUXa5Mt_josXWQ/edit#heading=h.sv5oginotsxn)
+		- ### Interesting PRs
+			- [[CSTBL-67] USDC Cash-Out Quick Action #18627](https://github.cbhq.net/consumer/react-native/pull/18627)
+			  collapsed:: true
+				- #### Description
+				- #### Involvement - Reviewer / Author
+			- [[CSTBL-84] Update Copy of the Title in the Rewards Section #18679](https://github.cbhq.net/consumer/react-native/pull/18679)
+			- [[CSTBL-113] Reduce the vertical space of the upsell points #18769](https://github.cbhq.net/consumer/react-native/pull/18769)
+			- [[CSTBL-114] Force old Simple-Trade Design for Add-Cash Flow #18772](https://github.cbhq.net/consumer/react-native/pull/18772)
+			- [[CSTBL-112] Add-Cash Confirmation Updates #18837](https://github.cbhq.net/consumer/react-native/pull/18837)
+			- [[CSTBL-124] Use New Add-Cash Flow in the Assets Tab #18902](https://github.cbhq.net/consumer/react-native/pull/18902)
+			- [[CSTBL-123] Add-Cash Upsell Clopy Changes #18895](https://github.cbhq.net/consumer/react-native/pull/18895)
+		- ### Other interesting work
+			- Presentations - Link
+			- Slack Thread - Screenshot
+			- Cross-Team involvement
+			- Mentoring
+			- Value Provided

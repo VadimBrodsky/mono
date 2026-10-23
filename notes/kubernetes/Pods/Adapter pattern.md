@@ -1,0 +1,3 @@
+The adapter pattern is a specific variation of the [[Sidecar pattern]], where the helper container takes a non-standardized output from the main container and adapts it into a format required by an external system.
+
+An example is the NGINX logs being sent to Prometheus. By default Prometheus does not understand NGINX logs, so a common approach is to put an adapter container into the NGINX Pod that converts NGINX logs into a format accepted by Prometheus.

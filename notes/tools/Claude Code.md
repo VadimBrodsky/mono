@@ -1,0 +1,6 @@
+- Can we invert the assertions to make sure that the tests are actually failing and testing what we think we are testing. Run the tests again and validate the failures, report back your findings. If everything fails as expected revert the changes back.
+- Only use mocks when you must (e.g. mocking data). Aim to test actual code as much as you can
+- Please look at the differences that we introduced in this branch, by diffing it with master. Summarize the changes using the format in @.github/PULL_REQUEST_TEMPLATE.md in markdown and output it into my clipboard by piping to pbcopy.
+- Please look at the differences that we introduced in this branch, by diffing it with master. If we have added brand new files please add jests tests to make sure that we are covering these new files. Ask me follow up questions if unclear. Report when done.
+- Installation
+	- Install cbcode via `npm install -g @cbhq/code-agent --registry https://registry-npm.cbhq.net`

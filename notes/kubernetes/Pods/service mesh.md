@@ -1,0 +1,1 @@
+Service meshes inject sidecar containers into application Pods. The sidecars then do things like encrypt traffic and expose telemetry and metrics.

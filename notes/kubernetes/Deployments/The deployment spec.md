@@ -1,0 +1,1 @@
+Is a declarative YAML object where you describe the desired state of a stateless app. You give it to Kubernetes where the [[The deployment controller]] implements and manages it.

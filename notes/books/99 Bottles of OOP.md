@@ -1,0 +1,6 @@
+- Chapter 1: Rediscovering Simplicity
+	- Where once you optimized for understandability, you now focus on its chageability
+	- DRYing out code is not free. It adds a level of indirection, and layers of indirection make the  details of what’s happening harder to understand. DRY makes sense when it reduces the cost of change more than it increases the cost of understanding the code.
+	- When you name a method after its current implementation, you can never change that internal implementation without ruining the method name.
+	- You should name methods not after what they do, but after what they mean, what they represent in the context of your domain.
+	- Naming the method at this slightly higher level of abstraction isolates the code from changes in the implementation details.

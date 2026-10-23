@@ -189,3 +189,30 @@ speak pet =
 
 
 ```
+
+## Topic index from Obi1
+- [[Installing Elm]]
+- CLI
+	- [[Elm Init]]
+	- [[Elm Repl]]
+	- [[Elm reactor]]
+	- [[Elm Make]]
+- [[Expressions]]
+- [[Comments]]
+- [[Strings]]
+- [[Numbers]]
+- [[Assigning Names to Values]]
+- [[Booleans]]
+- [[Conditionals]]
+- [[If-Expressions]]
+- [[Functions]]
+- [[Operators]]
+- [[Collections]]
+- [[Html module]]
+- [[Modules]]
+- [[Comma first lists]]
+- [[Incremental adoption]]
+- [[Elm Runtime]]
+- [[Elm Architecture]]
+- ### Resources
+- Elm core packages documentation - https://package.elm-lang.org/

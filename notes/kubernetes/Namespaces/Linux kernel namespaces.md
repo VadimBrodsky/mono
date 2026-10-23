@@ -1,0 +1,1 @@
+Kernel namespaces are an integral part of slicing operating system into virtual operating systems called containers.

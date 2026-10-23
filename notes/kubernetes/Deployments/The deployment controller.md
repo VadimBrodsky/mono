@@ -1,0 +1,1 @@
+The controller element is highly-available and operates as a background loop on the control plane reconciling observed state with desired state.

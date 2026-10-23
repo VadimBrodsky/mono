@@ -1,0 +1,5 @@
+- [[Kubectl]]
+- [[Pods 1]]
+	- [[Static Pods]]
+	- [[Directly via a Pod manifest]]
+	- [[Indirectly via a controller]]

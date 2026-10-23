@@ -1,0 +1,1 @@
+Pods deployed directly from a Pod manifest are called [[Static Pods]]. 
