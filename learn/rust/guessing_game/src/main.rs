@@ -1,6 +1,6 @@
-use std::io;   // prelude - bring the io type from the standard library
 use rand::Rng; // Rng trait defined methods that random number generators implement
 use std::cmp::Ordering;
+use std::io; // prelude - bring the io type from the standard library
 
 fn main() {
     println!("Guess the number!");
@@ -20,7 +20,6 @@ fn main() {
             .read_line(&mut guess) // pass the mutable reference to guess
             .expect("Failed to read line"); // handle the Err of the read_line enum
 
-
         // shadowed variable guess
         // convert a string into a u32 number
         let guess: u32 = match guess.trim().parse() {
@@ -28,7 +27,7 @@ fn main() {
             Err(_) => continue,
         };
 
-        println!("You guessed: {guess}");  // interpolate {guess} into the message
+        println!("You guessed: {guess}"); // interpolate {guess} into the message
 
         // pattern matching
         match guess.cmp(&secret_number) {
@@ -36,7 +35,7 @@ fn main() {
             Ordering::Greater => println!("Too big!"),
             Ordering::Equal => {
                 println!("You win!");
-                break;                    // exit the loop
+                break; // exit the loop
             }
         }
     }
