@@ -1,0 +1,8 @@
+<!-- Rich text Twig Macro -->
+{% macro richText(t, classes=[]) %}
+    {% if t|default('') %}
+        <div class="richText {{classes|join(' ')}}">
+            {{ t|smartypants }}}
+        </div>
+    {% endif %}
+{% endmacro %}
