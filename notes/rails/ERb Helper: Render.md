@@ -1,0 +1,9 @@
+# ERb Helper: Render
+
+- Used to render partials in ERb files.
+- Partials are usually named with a leading `_`.
+- Examples: `/app/views/layouts/_shim.html.erb`.
+
+```erb
+<%= render 'layouts/shim' %>
+```

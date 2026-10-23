@@ -1,0 +1,22 @@
+# Seeding Data
+
+Rails creates a file `db/seeds.rb` that defines the data that is always needed in the database.
+
+Creates default user and categories:
+
+```ruby
+user = User.create :email => 'jane@example.com', :password => '1234'
+Category.create[{:name => 'Programming'}, {:name => 'Event'}, {:name => 'TV'}]
+```
+
+To load the seed data:
+
+```bash
+rake db:seed
+```
+
+If the seed file was modified and the seed data needs to be reloaded run the following. It will recreate the database and add the seed data.
+
+```bash
+rake db:setup
+```

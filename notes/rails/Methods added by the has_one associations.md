@@ -1,0 +1,8 @@
+# Methods added by the has_one associations
+
+| !Method                               | !Description                       |
+|`user.profile`                        |Returns the associated (Profile) object, `nil` is returned if none is found. |
+|`user.profile=(profile)`              |Assigns the associated (profile) object, extracts the primary key, sets is as the foreign key. |
+|`user.profile.nil?`                   |Returns `true` if no associated Profile object. |
+|`user.build_profile(attributes={})`   |Returns a new profile object that has been instantiated with attributes and linked to user though a foreign key but hasn't yet been saved. |
+|`user.create_profile(attributes={})`  |Returns a new profile object that has been instantiated with attributes and linked to user through a foreign key and that has been already saved. |

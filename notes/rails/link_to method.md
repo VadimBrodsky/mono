@@ -1,0 +1,16 @@
+# link_to method
+
+- A view / ERb helper method to create links as anchor tags.
+- Can also specify a link target hash instad of a url: 
+
+`{:controller => 'demo', :action => 'index'}`
+
+```ruby
+<%= link_to "link text", 'url', {options: "hash"} %>
+
+<%= link_to "sample app", '#', id: "logo" %>
+<%= link_to('Hello Page 2', {:action => 'hello'}) %>
+<%= link_to 'Index', {:controller => 'demo', :action => 'index'}
+
+<%= link_to('Hello with parameters', {:action => 'hello', :page => 5, :id => 20}) %>%>
+```

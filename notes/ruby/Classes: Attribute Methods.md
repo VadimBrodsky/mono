@@ -1,0 +1,45 @@
+# Classes: Attribute Methods
+
+- For classes that have many attributes Ruby provides a shortcut.
+- Using the attribute `attr_*` methods.
+- `attr_reader`: creates a reader method.
+- `attr_writer`: creates a writer method.
+- `attr_accessor`: creates both a reader and a writer method.
+
+```ruby
+attr_reader :name
+
+#same as
+def name
+	@name
+end
+```
+
+```ruby
+atte_writer :name
+
+#same as
+def name=(value)
+	@name = value
+end
+```
+
+```ruby
+attr_accessor :name
+
+#same as both
+def name
+	@name
+end
+
+def name=(value)
+	@name = value
+end
+```
+
+```ruby
+#can create multiple instance variables and methods at once
+attr_accessor :name
+attr_writer :color
+attr_reader :legs, :arms
+```

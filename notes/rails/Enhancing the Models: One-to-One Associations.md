@@ -1,0 +1,29 @@
+# Enhancing the Models: One-to-One Associations
+
+A row in one table is related to exactly one row in another table. This is achieved using the `has_one` and `belongs_to` methods.
+
+```ruby
+class User < ActiveRecord::Base
+  has_one :profile
+end
+```
+
+```ruby
+class Profile < ActiveRecord::Base
+  belongs_to :user
+end
+```
+
+Assignment can be used to create the associations between the objects.
+
+```ruby
+user = User.create(:email => 'user@example.com' ...)
+profile = Profile.create(:name => 'John Doe' ...)
+user.profile = profile
+```
+
+This can be done in one step, using the `create_#{association_name}` method.
+
+```ruby
+user.create_profle :name => 'Jane Doe', :birthday => nil ...
+```

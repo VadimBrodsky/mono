@@ -1,0 +1,21 @@
+# Working With Files: Accessing Files
+
+- Two ways of opening a file.
+- `File.new`: 
+  ** Creates a new instance of the `File` object, the file exists while the object exists.
+  ** Accepts the file name and the writing mode.
+- `File.open`
+  ** Uses a block to perform actions.
+  ** At the end it closes the file automatically.
+  ** Accepts the file name and the writing mode.
+
+```ruby
+file = File.new('file_name.rb', 'w')
+file.close
+```
+
+```ruby
+File.open('file1.txt', 'r') do |file|
+	# read the data from the file
+end
+```

@@ -1,0 +1,20 @@
+# ActiveRecord: Delete: Delete
+
+The `delete` family of methods differs from `destroy` in that they don't instantiate or perform callbacks on the object they are deleting. They remove the row immediately from the database.
+
+```ruby
+Article.delete(4)
+Article.dete([5, 6])
+```
+
+Deleting with conditions allows to delete all rows that match a condition.
+
+```ruby
+Article.delete_all("published_at" < '2011-01-01')
+```
+
+The method `delete_all` without arguments will delete all of the records in the table.
+
+```ruby
+Article.delete_all
+```

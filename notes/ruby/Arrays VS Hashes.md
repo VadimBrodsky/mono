@@ -1,0 +1,24 @@
+# Arrays VS Hashes
+
+- Use arrays when the order is important.
+- Use hashes when the label is important.
+
+```ruby
+person = { 'first_name' => "Vadim", 'last_name' => "Brodsky"}
+person['first_name']    #=> "Vadim"
+person.key('Vadim')     #=> "first_name"
+person['gender'] = 'M'  #=> "m" // will add the new key value pair
+```
+
+```ruby
+person.keys             #=> ["first_name", "last_name"]
+person.values           #=> ["Vadim", "Brodsky"]  // returns the values as an array
+person.length           #=> 2
+person.size             #=> 2 // same as length
+```
+
+```ruby
+person.to_a             #=> [["first_name", "Vadim"], ["last_name", "Brodsky"]]
+person.clear            #=> {}
+person = {}             #=> {} // same as clear
+```

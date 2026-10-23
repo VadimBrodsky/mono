@@ -1,0 +1,47 @@
+# Migrate File
+
+- Migrations provide a way to alter the structure of the database incrementally, so that our data model can adapt to changing requirements.
+- Migration file is prefixed by a timestamp based on when the migration was generated.
+- `/db/migrate/[timestamp]_create_users.rb`
+- The migration consists of a `change` method that determines the change to be made to the database.
+- We can run the migration, known as “migrating up”, using the rake command.
+- `rake test:prepare`: ensures that the data model from the development database, `db/development.sqlite3`, is reflected in the test database `db/test.sqlite3`, assuming that SQLite is used locally.
+- Can include `puts` comments in the migrate file, to be output in the terminal during the migration.
+
+
+```ruby
+class CreateUsers < ActiveRecord::Migration
+  def change
+    create_table :users do |t|
+      t.string :name
+      t.string :email
+
+      t.timestamps
+    end
+  end
+end
+```
+
+Complex migrations can be specified explicitly with the `up` and `down` methods instead of `change`:
+
+```ruby
+def up
+end
+
+def down
+end
+```
+
+
+```bash
+bundle exec rake db:migrate
+bundle exec rake db:rollback
+```
+
+```bash
+bundle exec rake test:prepare
+```
+
+```ruby
+puts "*** Adding an index is next ***"
+```

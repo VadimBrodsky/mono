@@ -1,0 +1,12 @@
+# Options for the has_one declaration
+
+| !Option       | !Description                  | !Example         |
+|`:class_name`  |Specified the class name of the association. Used when the class name can't be inferred from the association name. |`has_one :profile, :class_name => 'Account'`  |
+|`:conditions`  |Specified the conditions that the associated object must meet in order to be included as a `WHERE SQL` fragments.  |`has_one :profile, :conditions => "active=1"` |
+|`:foreign_key` |Specified the foreign key used for the association in the event that i doesn't adhere to the convention of being the lowercase singular name of the target class with `_id` appended. |`has_one :profile, :foreign_key => 'account_id'` |
+|`:order`       |Specified the order in which the associated object is picked as an `ORDER BY SQL` fragment. |`has_one :profile, :order => 'created_at DESC'` |
+|`:dependent`   |Specified that the associated object should be removed when this object is. |`has_one :profile, :dependent => :destroy` |
+
+- If `:dependent` set to `:destroy` the association object is deleted using the destroy method.
+- If `:dependent`  set to `:delete` the associated object is deleted without calling its destroy method.
+- If `:dependent`  set to `:nullify` the associated object's foreign key is set to `NULL`.

@@ -1,0 +1,5 @@
+# Rails Asset Pipeline
+
+- Improves production and management of static assets such as CSS, JavaScript and Images.
+- Primary 3 features: asset directories, manifest files, and pre-processor engines.
+- With the asset pipeline, in production all the application stylesheets get rolled into `application.css`, all the application JavaScript code gets rolled into `javascripts.js`, and all such files (including those in lib/assets and vendor/assets) are minified.

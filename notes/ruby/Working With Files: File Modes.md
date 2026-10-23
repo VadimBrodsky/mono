@@ -1,0 +1,15 @@
+# Working With Files: File Modes
+
+- Most useful are `r` to read, `w` to start new file, `r+` to read and write, `a` to add something at the end.
+
+| !Access Mode | !Description                  | !Read & Write |
+|     `r`      | Read from start (must exist)  |     `r+`      |
+|     `w`      | Truncate / Write from start   |     `w+`      |
+|     `a`      | Append / Write from end       |     `a+`      |
+
+- `r`: reads from the start, the file must exist. 
+- `w`: writes from the start, will create the file if it doesn't exist. If the file exists it will overwrite it.
+- `a`: append to the end of a file
+- `r+`: read and write from the file without erasing everything, starting at the beginning of the file.
+- `w+`: read and write from the file but will truncate everything first.
+- `a+`: read and write from the file without truncating, starting at the end of the file.

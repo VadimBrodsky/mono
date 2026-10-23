@@ -1,0 +1,29 @@
+# Working With Files: Reading
+
+- Cannot use `chomp` automatically with `gets`, if it's the end of the file there is nothing to get -- `chomp` will cause an error.
+
+```ruby
+file = File.new('test_file.txt', 'r')
+file.gets 				#=> "abcd\n"
+file.gets.chomp 		#=> "abcdabcdabcd"
+file.gets 				#=> nil
+```
+
+```ruby
+file.gets     # reads from the pointer position to end of line
+file.read(4)  # read 4 characters
+```
+
+```ruby
+File.open('file1.txt', 'r') do |file|
+  while line = file.gets
+    puts "** " + line.chomp.reverse + " **"
+  end
+end
+```
+
+```ruby
+File.open('file1.txt', 'r') do |file|
+  file.each_line { |line| puts line.upcase }
+end
+```
