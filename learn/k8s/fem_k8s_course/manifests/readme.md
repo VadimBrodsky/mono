@@ -118,9 +118,25 @@ kubectl wait --namespace nginx-gateway \
 deployment.apps/nginx-gateway condition met
 ```
 
-Patching the gateway
+Patching the gateway to allow to work in Kind
 
 ```shell
 kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type=merge \
   -p '{"spec":{"kubernetes":{"deployment":{"pod":{"nodeSelector":{"node-role.kubernetes.io/control-plane":""},"tolerations":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"}]}},"service":{"nodePorts":[{"port":30080,"listenerPort":80}]}}}}'
 ```
+
+After defining the gateway manifest and the httproute we can connect to the service
+
+A CRD is a new kind; an operator is its loop
+curl -H "Host: sample-app.local" <http://localhost:30080/healthz>
+
+```
+
+## Operators and CRD (custom resource definitions)
+
+A CRD is a new kind; an opeator is its loop
+
+- A CRD teaches the API server a new kind
+- kubectl get clusters becomes as reas as get pods
+- An operator is the control loop that reconciles them
+- We consime an operator - we do not write one
