@@ -24,11 +24,18 @@ spec:
             - configMapRef:
                 name: db-config
           env:
+            - name: DB_HOST
+              value: postgres-rw
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: username
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: db-secret
-                  key: DB_PASSWORD
+                  name: postgres-app
+                  key: password
           startupProbe:
             httpGet:
               path: /healthz
