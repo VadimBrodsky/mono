@@ -127,16 +127,34 @@ kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type=merg
 
 After defining the gateway manifest and the httproute we can connect to the service
 
-A CRD is a new kind; an operator is its loop
+```shell
 curl -H "Host: sample-app.local" <http://localhost:30080/healthz>
-
 ```
 
 ## Operators and CRD (custom resource definitions)
 
-A CRD is a new kind; an opeator is its loop
+A CRD is a new kind; an operator is its loop
 
 - A CRD teaches the API server a new kind
-- kubectl get clusters becomes as reas as get pods
+- kubectl get clusters becomes as real as get pods
 - An operator is the control loop that reconciles them
-- We consime an operator - we do not write one
+- We consume an operator - we do not write one
+
+A good example of a operator is CloudNativePG, to run a Postgres databasein k8s - <https://cloudnative-pg.io/>
+
+```shell
+kubectl apply --server-side -f https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.29.1/cnpg-1.29.1.yaml
+```
+
+To see the crds:
+
+```shell
+kubectl get crds | grep cnpg
+```
+
+You declare a cluster; the operator does the rest
+
+- CNPG manages Pods like PVCs like a StatefulSet would
+- Plus failover, backups, and safe rolling upgrades
+- It generates and owns the credentials - no human did
+- The app talks to the -rw Service
