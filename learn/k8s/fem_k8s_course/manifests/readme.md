@@ -128,7 +128,7 @@ kubectl patch nginxproxy nginx-gateway-proxy-config -n nginx-gateway --type=merg
 After defining the gateway manifest and the httproute we can connect to the service
 
 ```shell
-curl -H "Host: sample-app.local" <http://localhost:30080/healthz>
+curl -H "Host: sample-app.local" http://localhost:30080/healthz
 ```
 
 ## Operators and CRD (custom resource definitions)
