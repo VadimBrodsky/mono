@@ -22,6 +22,7 @@ kubectl --dry-run=client create deployment postgres --image=postgres:16 --output
 ## CLI
 
 - Apply: `kubectl apply -f deployment.yaml` apply the manifest to the cluster
+- Apply to a specific namespace: `kubectl apply -n <namespace> -f <file>`
 - Diff: `kubectl diff -f deployment.yaml` changes between manifest and running state
 
 Reapplying the same manifest is a noop.
@@ -107,7 +108,7 @@ kubectl apply --server-side -f https://raw.githubusercontent.com/nginx/nginx-gat
 kubectl apply -f https://raw.githubusercontent.com/nginx/nginx-gateway-fabric/v2.6.3/deploy/nodeport/deploy.yaml
 ```
 
-Make sure its live
+Make sure its live by waiting
 
 ```shell
 kubectl wait --namespace nginx-gateway \
