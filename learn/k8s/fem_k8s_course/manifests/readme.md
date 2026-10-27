@@ -158,3 +158,33 @@ You declare a cluster; the operator does the rest
 - Plus failover, backups, and safe rolling upgrades
 - It generates and owns the credentials - no human did
 - The app talks to the -rw Service
+
+## Kustomize
+
+Used to be a project outside of Kubernetes -- <https://kustomize.io/>
+
+- Merges yaml manifests together using Kustomization.yaml like an index
+- Good to set up environments
+- If a namespace is specified all of the resources will get that namespace
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: app
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - gateway.yaml
+  - httroute.yaml
+  - postgres-cluster.yaml
+```
+
+```shell
+# base is a folder name where kustomize.yaml is
+kubectl apply -k base
+```
+
+```shell
+kubectl kustomize base
+```
