@@ -188,3 +188,29 @@ kubectl apply -k base
 ```shell
 kubectl kustomize base
 ```
+
+## Argo CD
+
+Use Git as the source of truth for the Cluster.
+
+Install Argo CD into its own namespace from the upstream manifests:
+
+```shell
+kubectl create namespace argocd
+kubectl apply --server-side -n argocd \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/v3.4.3/manifests/install.yaml
+```
+
+Wait for the server to come up, then port-forward the UI and grab the initial admin password so you can log in and tour it:
+
+```shell
+kubectl rollout status deployment/argocd-server -n argocd
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath='{.data.password}' | base64 -d
+```
+
+port-forward the UI
+
+```shell
+kubectl port-forward svc/argocd-server -n argocd 8081:443
+```
