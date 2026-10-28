@@ -214,3 +214,41 @@ port-forward the UI
 ```shell
 kubectl port-forward svc/argocd-server -n argocd 8081:443
 ```
+
+## Sealed Secrets
+
+You install the Sealed Secrets controller on kind, use the kubeseal CLI to encrypt the Secret into a SealedSecret custom resource that is safe to commit, push it to the repo, and watch the controller decrypt it back into a real Secret in the cluster.
+
+With that, git is genuinely the complete source of truth — nothing secret is left out.
+
+```shell
+kubectl apply -f \
+  https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/controller.yaml
+```
+
+Create the plaintext Secret locally only — never applied to the cluster, never committed
+
+```shell
+kubectl create secret generic db-extra -n app \
+  --from-literal=password=demo-not-a-real-password \
+  --dry-run=client -o yaml > db-extra-secret.yaml
+```
+
+Seal it with kubeseal. This encrypts against the kind controller's public key and produces a SealedSecret CR that is safe to commit. It also prints nothing on success — the encrypted, git-safe resource lands in sealed-db-extra.yaml:
+
+Install the CLI `brew install kubeseal`
+
+```shell
+kubeseal --controller-namespace kube-system \
+  --format yaml < db-extra-secret.yaml > sealed-db-extra.yaml
+```
+
+Show that the sealed output is genuinely encrypted — the password is gone, replaced by ciphertext only this cluster can decrypt:
+
+```shell
+grep -A1 "encryptedData" sealed-db-extra.yaml
+```
+
+```
+
+
