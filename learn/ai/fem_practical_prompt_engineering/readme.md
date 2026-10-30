@@ -68,3 +68,8 @@ Standard prompts often produce code with extra features not requested (like expo
 - Model relies entirely on pre-training knowledge.
 - Works well for common tasks.
 - Quality varies based on task complexity and specificity.
+
+The quality of zero-shot prompt outputs varies based on task complexity and specificity. The more complex the task, the harder it will be for the model to give a good response. However, the more specific you can be with the zero-shot prompt, the better the output will be. Breaking down tasks to be as specific and as small as possible leads to better results.
+
+Ideal for tasks where the model's pre-training knowledge is sufficient to understand the request.
+

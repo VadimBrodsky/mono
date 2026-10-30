@@ -3,12 +3,52 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f7f8fa" />
-    <meta name="description" content="A personal library for your best AI prompts." />
+    <meta name="theme-color" content="#0b1020" />
     <title>Prompt Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+    <script type="module" src="/src/main.js"></script>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Prompt Library home">
+          <span class="brand-mark">&lt;/&gt;</span>
+          <span>prompt<span class="brand-light">.library</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot"></span> STORED LOCALLY</span>
+      </header>
+
+      <section class="intro">
+        <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
+        <h1>Good prompts.<br /><span>Better outputs.</span></h1>
+        <p class="intro-copy">Keep your best ideas close. Write once, reuse everywhere.</p>
+      </section>
+
+      <section class="workspace" aria-label="Prompt library">
+        <form class="composer" id="prompt-form">
+          <div class="section-heading">
+            <div><span class="step">01</span><h2>New prompt</h2></div>
+            <span class="mono-label">// COMPOSE</span>
+          </div>
+          <label for="prompt-title">Prompt title</label>
+          <input id="prompt-title" name="title" type="text" placeholder="e.g. Explain a codebase" required maxlength="100" />
+          <label for="prompt-content">Prompt content</label>
+          <textarea id="prompt-content" name="content" rows="6" placeholder="Write or paste your prompt here..." required></textarea>
+          <button class="save-button" type="submit"><span>Save prompt</span><span aria-hidden="true">↗</span></button>
+        </form>
+
+        <section class="library" aria-labelledby="library-title">
+          <div class="section-heading library-heading">
+            <div><span class="step">02</span><h2 id="library-title">Your library</h2><span class="count" id="prompt-count">0</span></div>
+            <span class="mono-label">// COLLECTION</span>
+          </div>
+          <div class="prompt-list" id="prompt-list" aria-live="polite"></div>
+        </section>
+      </section>
+      <footer>MADE FOR YOUR NEXT BIG IDEA <span>·</span> YOUR PROMPTS STAY ON THIS DEVICE</footer>
+    </main>
   </body>
 </html>
