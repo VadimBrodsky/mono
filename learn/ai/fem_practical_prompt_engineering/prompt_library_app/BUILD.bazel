@@ -1,0 +1,11 @@
+exports_files([
+    "index.html",
+    "package.json",
+    "pnpm-lock.yaml",
+])
+
+filegroup(
+    name = "app_sources",
+    srcs = glob(["src/**"]),
+    visibility = ["//visibility:public"],
+)
