@@ -59,3 +59,5 @@ Systemic approaches to working with LLMs.
 When using LLMs, you should ask full questions in complete sentences, similar to how you would ask a neighbor. This differs from search engines where people typically use summarized keywords.
 
 To improve consistency by including instructions in your prompts that ask the AI to seek clarification when needed. For example: "If you have any other questions for me, make sure you ask those first before you start to implement this feature" or "If you don't understand what I am saying, make sure that you come and check with me first".
+
+Standard prompts often produce code with extra features not requested (like export buttons or search bars), may contain bugs (like non-functional save buttons), and don't provide enough specificity to get exactly what you need. They require more iterative refinement to achieve the desired result.
