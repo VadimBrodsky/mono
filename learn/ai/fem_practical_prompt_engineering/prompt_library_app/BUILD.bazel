@@ -1,3 +1,8 @@
+load("@prompt_library_npm//:defs.bzl", "npm_link_all_packages")
+load("@prompt_library_npm//learn/ai/fem_practical_prompt_engineering/prompt_library_app:vite/package_json.bzl", vite_bin = "bin")
+
+npm_link_all_packages()
+
 exports_files([
     "index.html",
     "package.json",
@@ -8,4 +13,18 @@ filegroup(
     name = "app_sources",
     srcs = glob(["src/**"]),
     visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "app_inputs",
+    srcs = ["index.html"] + glob(["src/**"]),
+)
+
+vite_bin.vite(
+    name = "vite_build",
+    srcs = [":app_inputs"],
+    out_dirs = ["dist"],
+    chdir = package_name(),
+    fixed_args = ["build"],
+    silent_on_success = False,
 )
