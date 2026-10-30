@@ -249,6 +249,37 @@ Show that the sealed output is genuinely encrypted — the password is gone, rep
 grep -A1 "encryptedData" sealed-db-extra.yaml
 ```
 
+## Environment Overlays with Kustomize
+
+- A way to reuse manifests for different environments.
+- Each overlay only specifies the things that are different about it from the base
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../day-one/k8s/base
+patches:
+  - path: gateway-class-alb.yaml
+    target: { kind: Gateway, name: sample-app }
+  - path: storageclass-gp3.yaml
+    target: { kind: Cluster, name: postgres }
+  - path: replicas-4.yaml
+    target: { kind: Deployment, name: sample-app }
+  - path: httproute-path-only.yaml
+    target: { kind: HTTPRoute, name: sample-app }
 ```
 
+To see the diff between the environments:
 
+```shell
+diff <(kubectl kustomize manifests/day-one/k8s/base) <(kubectl kustomize manifests/day-two/k8s/overlays/eks) | head -20
+```
+
+## Platform Observability
+
+- Some things are built into k8s
+- `kubectl top node` live CPU / memory per Pod and node, from `metrics-server`
+- Events: the cluster's running narration of what happened and why
+- `kubectl rollout status` - Observability for deploys, not just debugging
+- EKS CloudWatch Container insights or Prometheus Grafana Loki Stack
