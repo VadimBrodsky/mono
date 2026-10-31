@@ -73,3 +73,13 @@ The quality of zero-shot prompt outputs varies based on task complexity and spec
 
 Ideal for tasks where the model's pre-training knowledge is sufficient to understand the request.
 
+## One Shot
+
+- Provide exactly on example with your request.
+- Model learns the pattern, format, and style from the example.
+- Useful for establishing format.
+- Show don't tell.
+
+One-shot prompting is providing exactly one example with your request to an LLM, whereas zero-shot prompting provides zero examples. In one-shot prompting, the model learns the pattern, format, and style from the single example provided, which helps prime and train the model for the desired output.
+
+The "show don't tell" principle means it's more effective to provide a single example of the desired output format rather than writing lengthy paragraphs of instructions about what to do and not do. Showing an example of what you want the output to mimic is often easier and more effective than describing it in detail.
