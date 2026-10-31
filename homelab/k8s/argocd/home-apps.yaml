@@ -1,0 +1,22 @@
+# homelab/argocd/home-apps.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: home-apps
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/YOUR_ACCOUNT/YOUR_MONOREPO.git
+    targetRevision: main
+    path: homelab/k8s/clusters/home/apps
+
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: homelab
+
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
