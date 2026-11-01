@@ -73,6 +73,14 @@ bazel run //homelab/k8s/clusters/dev:up
 bazel run //homelab/k8s/clusters/dev:down
 ```
 
+Then attach to kubectl:
+
+```shell
+export KUBECONFIG="$HOME/Code/mono/homelab/k8s/clusters/dev/.state/kubeconfig"
+
+kubectl config use-context kind-homelab-dev
+```
+
 ### Home
 
 Runs on Proxmox VMs.
