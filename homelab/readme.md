@@ -65,6 +65,14 @@ Runs locally on the MacBook using kind.
 
 This environment is disposable and intended for testing manifests, images, and Kubernetes behaviour.
 
+```shell
+# start the kind cluster
+bazel run //homelab/k8s/clusters/dev:up
+
+# stop the kind cluster
+bazel run //homelab/k8s/clusters/dev:down
+```
+
 ### Home
 
 Runs on Proxmox VMs.

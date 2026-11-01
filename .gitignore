@@ -9,3 +9,6 @@ bazel-*
 .idea/
 .vscode/
 .DS_Store
+
+# kubeconfig
+homelab/k8s/clusters/dev/.state/

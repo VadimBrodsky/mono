@@ -1,0 +1,12 @@
+# homelab/k8s/clusters/dev/BUILD.bazel
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+sh_binary(
+    name = "up",
+    srcs = ["up.sh"],
+)
+
+sh_binary(
+    name = "down",
+    srcs = ["down.sh"],
+)
