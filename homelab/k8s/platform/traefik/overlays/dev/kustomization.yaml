@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: traefik
+      namespace: traefik
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --providers.kubernetesgateway.statusaddress.hostname=localhost
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --api.insecure=true
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --entrypoints.traefik.address=:9001
+  - target:
+      version: v1
+      kind: Service
+      name: traefik
+      namespace: traefik
+    patch: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: traefik
+        namespace: traefik
+      spec:
+        type: NodePort
+        externalTrafficPolicy: Cluster
+        ports:
+          - name: web
+            port: 80
+            targetPort: web
+            nodePort: 30080
