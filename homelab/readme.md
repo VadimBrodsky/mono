@@ -26,9 +26,11 @@ homelab/
     │   └── home/
     │       └── apps/           # Home cluster application selection
     └── platform/               # Shared cluster services and controllers
+        ├── gateway-api/        # Cluster-wide Gateway API CRDs
+        └── traefik/            # Traefik controller and Gateway
 ```
 
-This tree summarizes the directory layout rather than listing every manifest. The `bootstrap/`, `terraform/proxmox/`, and `k8s/platform/` directories are currently placeholders.
+This tree summarizes the directory layout rather than listing every manifest. The `bootstrap/` and `terraform/proxmox/` directories are currently placeholders.
 
 ## Responsibilities
 
@@ -71,6 +73,17 @@ bazel run //homelab/k8s/clusters/dev:up
 
 # stop the kind cluster
 bazel run //homelab/k8s/clusters/dev:down
+```
+
+The startup command installs the Gateway API CRDs using server-side apply and
+waits for them to be established. It requires network access to download the
+pinned CRD bundle and reapplies it when run against an existing cluster.
+Traefik can then be installed separately from the repository root:
+
+```shell
+kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
+  --context kind-homelab-dev apply --server-side \
+  -k homelab/k8s/platform/traefik/overlays/dev
 ```
 
 Then attach to kubectl:
