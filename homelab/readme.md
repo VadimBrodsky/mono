@@ -13,11 +13,9 @@ homelab/
 │   └── proxmox/                # Proxmox VM provisioning
 └── k8s/
     ├── apps/                   # Application manifests and environment overlays
-    │   └── demo/
-    │       ├── base/           # Shared application resources
+    │   └── whoami/
     │       └── overlays/
-    │           ├── dev/        # Local development customizations
-    │           └── home/       # Home cluster customizations
+    │           └── dev/        # Local routing test application
     ├── argocd/                 # Argo CD Application definitions
     ├── clusters/
     │   ├── dev/
