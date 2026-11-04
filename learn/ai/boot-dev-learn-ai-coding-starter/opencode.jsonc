@@ -9,7 +9,7 @@
             "reasoning_effort": "none",
           },
           "body": {
-            "temperature": 0.1,
+            "temperature": 0.9,
           },
         },
       },
