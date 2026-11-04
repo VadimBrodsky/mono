@@ -1,6 +1,7 @@
 ---
 description: Read-only code review agent that reports actionable findings without changing files.
 mode: primary
+steps: 2
 permission:
   "*": deny
   read: allow
