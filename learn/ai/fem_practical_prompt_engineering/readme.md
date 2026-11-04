@@ -83,3 +83,26 @@ Ideal for tasks where the model's pre-training knowledge is sufficient to unders
 One-shot prompting is providing exactly one example with your request to an LLM, whereas zero-shot prompting provides zero examples. In one-shot prompting, the model learns the pattern, format, and style from the single example provided, which helps prime and train the model for the desired output.
 
 The "show don't tell" principle means it's more effective to provide a single example of the desired output format rather than writing lengthy paragraphs of instructions about what to do and not do. Showing an example of what you want the output to mimic is often easier and more effective than describing it in detail.
+
+## What Makes a Good Prompt
+
+1. Be specific (you need strong technical skills to be able to do this)
+2. Define constraints
+3. Add meaningful context
+4. Describe edge cases
+5. Provide validation instructions
+
+Your agent is exceptionally good at:
+
+- Applying code changes quickly
+- Spotting patterns and searching for code related to the task
+- Ensuring tests, linters, and formatters pass
+
+Your agent does not:
+
+- Understand your customers or business goals inherently
+- Have full context of the history or future plans for the project
+- Have a complete understanding of any architecture that lives outside the repo
+- Know how the running system behaves (unless you've provided logs or other context, which is a good idea)
+- Care nearly as much as you do about keeping the "lines of code" count sane
+- Have taste
