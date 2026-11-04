@@ -81,6 +81,18 @@ hallucinate(x)✨"""
     assert run(source) == "2\n"
 
 
+def test_loadbearing_values_are_visible_and_immutable():
+    source = """loadbearing LIMIT = 100✨
+slop score = 10✨
+score = score + 1✨
+{
+    hallucinate(LIMIT)✨
+    hallucinate(score)✨
+}
+hallucinate(LIMIT)✨"""
+    assert run(source) == "100\n11\n100\n"
+
+
 def test_loop_body_is_a_fresh_scope_each_iteration():
     source = """slop i = 0✨
 ralph i < 3 {
