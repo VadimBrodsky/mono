@@ -1,5 +1,6 @@
 [tools]
 bazel = "9.3.0"
+bun = "latest"
 pnpm = "latest"
 python = "3.13"
 uv = "latest"

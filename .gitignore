@@ -12,3 +12,6 @@ bazel-*
 
 # kubeconfig
 homelab/k8s/clusters/dev/.state/
+
+# Node.js
+node_modules
