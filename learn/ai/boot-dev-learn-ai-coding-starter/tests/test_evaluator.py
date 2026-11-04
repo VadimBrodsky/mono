@@ -19,6 +19,12 @@ def fails(source: str) -> str:
     ("expression", "expected"),
     [
         ("7 / 2", "3"),
+        ("-7 / 2", "-3"),
+        ("7 / -2", "-3"),
+        ("-7 / -2", "3"),
+        ("-6 / 2", "-3"),
+        ("-1 / 2", "0"),
+        ("-1000000000000000000000000000001 / 2", "-500000000000000000000000000000"),
         ("2 - 3 * 4", "-10"),
         ("(2 - 3) * 4", "-4"),
         ("--5", "5"),
@@ -27,6 +33,10 @@ def fails(source: str) -> str:
 )
 def test_arithmetic(expression: str, expected: str):
     assert run(f"hallucinate({expression})✨") == f"{expected}\n"
+
+
+def test_division_by_zero():
+    assert fails("hallucinate(1 / 0)✨") == "SlopLang runtime error at line 1: division by zero"
 
 
 @pytest.mark.parametrize(
