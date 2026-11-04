@@ -62,6 +62,7 @@ CASES = [
     ),
     ("slop x = 1✨\nslop x = 2✨", "runtime", 2, "'x' is already declared in this scope"),
     ("vibe 1 {\n}", "runtime", 1, "vibe condition must be a boolean, got number"),
+    ("hallucinate(1/0)✨", "runtime", 1, "division by zero"),
     (
         "clanker add(a, b) {\n    ship a + b✨\n}\nhallucinate(add(1))✨",
         "runtime",
