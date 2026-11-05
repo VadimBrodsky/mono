@@ -1,0 +1,20 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+
+addressType: IPv4
+endpoints:
+  - addresses:
+      - 192.168.4.200
+    conditions:
+      ready: true
+
+metadata:
+  labels:
+    endpointslice.kubernetes.io/managed-by: homelab-manual
+    kubernetes.io/service-name: biggie
+  name: biggie
+
+ports:
+  - name: https
+    port: 8006
+    protocol: TCP

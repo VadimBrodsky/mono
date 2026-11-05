@@ -1,0 +1,21 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+
+metadata:
+  name: biggie
+  namespace: biggie
+spec:
+  hostnames:
+    - biggie.brodsky.club
+  parentRefs:
+    - name: traefik
+      namespace: traefik
+      sectionName: https
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: biggie
+          port: 8006
