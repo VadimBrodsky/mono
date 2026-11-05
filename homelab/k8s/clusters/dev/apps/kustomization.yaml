@@ -3,3 +3,4 @@ kind: Kustomization
 
 resources:
   - ../../../apps/whoami/overlays/dev
+  - ../../../apps/biggie/overlays/dev
