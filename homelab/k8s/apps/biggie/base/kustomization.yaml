@@ -7,3 +7,5 @@ resources:
   - namespace.yaml
   - service.yaml
   - endpointslice.yaml
+  - proxmox-ca.yaml
+  - backend-tls-policy.yaml
