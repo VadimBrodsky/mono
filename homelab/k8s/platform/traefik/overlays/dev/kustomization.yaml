@@ -21,9 +21,6 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --entrypoints.traefik.address=:9001
-      - op: add
-        path: /spec/template/spec/containers/0/args/-
-        value: --serversTransport.insecureSkipVerify=true
   - target:
       version: v1
       kind: Service
