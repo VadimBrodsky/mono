@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: unraid
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: unraid
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: unraid-ca
+    hostname: tower.local
