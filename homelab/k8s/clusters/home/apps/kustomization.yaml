@@ -4,3 +4,8 @@ kind: Kustomization
 resources:
   - ../../../apps/biggie/overlays/home
   - ../../../apps/unraid/overlays/home
+  - ../../../apps/audiobookshelf/overlays/home
+  - ../../../apps/grimmory/overlays/home
+  - ../../../apps/immich/overlays/home
+  - ../../../apps/romm/overlays/home
+  - ../../../apps/stash/overlays/home

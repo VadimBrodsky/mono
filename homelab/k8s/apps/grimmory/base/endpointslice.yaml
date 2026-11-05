@@ -1,0 +1,17 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+addressType: IPv4
+endpoints:
+  - addresses:
+      - 192.168.4.199
+    conditions:
+      ready: true
+metadata:
+  labels:
+    endpointslice.kubernetes.io/managed-by: homelab-manual
+    kubernetes.io/service-name: grimmory
+  name: grimmory
+ports:
+  - name: http
+    port: 6060
+    protocol: TCP

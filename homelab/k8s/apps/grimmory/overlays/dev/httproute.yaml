@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grimmory
+  namespace: grimmory
+spec:
+  hostnames:
+    - grimm.localhost
+  parentRefs:
+    - name: traefik
+      namespace: traefik
+      sectionName: http
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: grimmory
+          port: 6060

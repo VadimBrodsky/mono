@@ -5,3 +5,8 @@ resources:
   - ../../../apps/whoami/overlays/dev
   - ../../../apps/biggie/overlays/dev
   - ../../../apps/unraid/overlays/dev
+  - ../../../apps/audiobookshelf/overlays/dev
+  - ../../../apps/grimmory/overlays/dev
+  - ../../../apps/immich/overlays/dev
+  - ../../../apps/romm/overlays/dev
+  - ../../../apps/stash/overlays/dev
