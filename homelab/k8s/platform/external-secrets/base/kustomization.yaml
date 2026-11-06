@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: external-secrets
+
+resources:
+  - namespace.yaml
+  - https://github.com/external-secrets/external-secrets/releases/download/v2.14.0/external-secrets.yaml
+
+patches:
+  # The upstream release bundle defaults to the "default" namespace.
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: external-secrets-cert-controller
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/args/3
+        value: --service-namespace=external-secrets
+      - op: replace
+        path: /spec/template/spec/containers/0/args/5
+        value: --secret-namespace=external-secrets
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: external-secrets-webhook
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/args/2
+        value: --dns-name=external-secrets-webhook.external-secrets.svc

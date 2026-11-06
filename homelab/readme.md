@@ -25,6 +25,7 @@ homelab/
     │       └── apps/           # Home cluster application selection
     └── platform/               # Shared cluster services and controllers
         ├── gateway-api/        # Cluster-wide Gateway API CRDs
+        ├── external-secrets/   # External Secrets Operator
         └── traefik/            # Traefik controller and Gateway
 ```
 
@@ -73,15 +74,45 @@ bazel run //homelab/k8s/clusters/dev:up
 bazel run //homelab/k8s/clusters/dev:down
 ```
 
-The startup command installs the Gateway API CRDs using server-side apply and
-waits for them to be established. It requires network access to download the
-pinned CRD bundle and reapplies it when run against an existing cluster.
-Traefik can then be installed separately from the repository root:
+The startup command installs the Gateway API CRDs and External Secrets
+Operator using pinned Kustomize manifests and server-side apply. It waits for
+their CRDs and ESO deployments to become ready. The startup command requires
+network access to download the pinned release bundles and reapplies them when
+run against an existing cluster.
+
+Bootstrap the 1Password Service Account token after starting kind. Create a
+Service Account for the intended vault and store its token in a privileged
+1Password item that the Service Account cannot read. This step only seeds the
+token Secret; no SecretStore, ExternalSecret, or certificate resources are
+installed yet.
+
+```shell
+token_ref="$(op item get 'Service Account Auth Token: homelab-dev-service-account' \
+  --vault Private --fields label=credential --format json | jq -r '.reference')"
+
+KUBECONFIG=homelab/k8s/clusters/dev/.state/kubeconfig \
+  homelab/k8s/scripts/bootstrap-1password-token.sh \
+  kind-homelab-dev "$token_ref"
+
+unset token_ref
+```
+
+This example requires the 1Password CLI and `jq`, plus an active 1Password CLI
+session. It resolves the item reference using its ID because the item title
+contains a colon, which isn't supported in named secret references. The helper
+writes the token only to a temporary file and creates the bootstrap Secret in
+the cluster; the token is not stored in Git. Use a separate Service Account
+and token item for home.
+
+Install Traefik and then apply the dev app resources:
 
 ```shell
 kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
   --context kind-homelab-dev apply --server-side \
   -k homelab/k8s/platform/traefik/overlays/dev
+
+kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
+  --context kind-homelab-dev apply -k homelab/k8s/clusters/dev/apps
 ```
 
 Then attach to kubectl:

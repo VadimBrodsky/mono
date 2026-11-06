@@ -46,3 +46,18 @@ kubectl --context "kind-${CLUSTER_NAME}" wait --for=condition=Established \
   crd/tlsroutes.gateway.networking.k8s.io \
   crd/udproutes.gateway.networking.k8s.io \
   --timeout=120s
+
+# Install External Secrets Operator before applying its custom resources.
+kubectl --context "kind-${CLUSTER_NAME}" apply --server-side \
+  -k ../../platform/external-secrets/overlays/dev
+
+kubectl --context "kind-${CLUSTER_NAME}" wait --for=condition=Established \
+  crd/clustersecretstores.external-secrets.io \
+  crd/externalsecrets.external-secrets.io \
+  crd/secretstores.external-secrets.io \
+  --timeout=180s
+
+for deployment in external-secrets external-secrets-webhook external-secrets-cert-controller; do
+  kubectl --context "kind-${CLUSTER_NAME}" -n external-secrets \
+    rollout status "deployment/${deployment}" --timeout=180s
+done
