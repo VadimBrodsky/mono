@@ -87,22 +87,24 @@ token Secret; no SecretStore, ExternalSecret, or certificate resources are
 installed yet.
 
 ```shell
-token_ref="$(op item get 'Service Account Auth Token: homelab-dev-service-account' \
-  --vault Private --fields label=credential --format json | jq -r '.reference')"
-
-KUBECONFIG=homelab/k8s/clusters/dev/.state/kubeconfig \
-  homelab/k8s/scripts/bootstrap-1password-token.sh \
-  kind-homelab-dev "$token_ref"
-
-unset token_ref
+homelab/k8s/scripts/bootstrap-1password-token.sh dev homelab-dev-service-account
 ```
 
-This example requires the 1Password CLI and `jq`, plus an active 1Password CLI
-session. It resolves the item reference using its ID because the item title
-contains a colon, which isn't supported in named secret references. The helper
-writes the token only to a temporary file and creates the bootstrap Secret in
-the cluster; the token is not stored in Git. Use a separate Service Account
-and token item for home.
+The helper targets the dev context using the local kubeconfig and `Private` vault. It
+looks up the item's `credential` field by name, checks the 1Password CLI session
+with `op whoami`, and requires `op`, `jq`, and `kubectl`. For home, set its
+context and vault before running the same helper with the home item name:
+
+```shell
+HOMELAB_HOME_CONTEXT='<home-kubectl-context>' \
+HOMELAB_HOME_VAULT='<home-1password-vault>' \
+  homelab/k8s/scripts/bootstrap-1password-token.sh home '<home-service-account-item>'
+```
+
+Home uses `KUBECONFIG` if set, otherwise `~/.kube/config`. The helper writes
+the token only to a temporary file and creates the bootstrap Secret in the
+cluster; the token is not stored in Git. Keep separate Service Accounts and
+token items for dev and home.
 
 Install Traefik and then apply the dev app resources:
 
@@ -115,13 +117,16 @@ kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
   --context kind-homelab-dev apply -k homelab/k8s/clusters/dev/apps
 ```
 
-Then attach to kubectl:
+After starting the cluster, set the local kubeconfig in your current shell:
 
 ```shell
-export KUBECONFIG="$HOME/Code/mono/homelab/k8s/clusters/dev/.state/kubeconfig"
-
-kubectl config use-context kind-homelab-dev
+source homelab/k8s/clusters/dev/set-context.sh
 ```
+
+`up.sh` also selects `kind-homelab-dev` in the generated kubeconfig. Source
+`set-context.sh` in each new terminal where you want kubectl to use this
+cluster. Do not run it with `bazel run` or execute it directly: a child process
+cannot set `KUBECONFIG` in its parent shell.
 
 ### Home
 
