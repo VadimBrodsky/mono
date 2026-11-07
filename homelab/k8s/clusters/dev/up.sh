@@ -49,6 +49,13 @@ kubectl --context "kind-${CLUSTER_NAME}" wait --for=condition=Established \
   crd/udproutes.gateway.networking.k8s.io \
   --timeout=120s
 
+# Install Traefik after the Gateway API CRDs it depends on are established.
+kubectl --context "kind-${CLUSTER_NAME}" apply --server-side \
+  -k ../../platform/traefik/overlays/dev
+
+kubectl --context "kind-${CLUSTER_NAME}" -n traefik \
+  rollout status deployment/traefik --timeout=180s
+
 # Install External Secrets Operator before applying its custom resources.
 kubectl --context "kind-${CLUSTER_NAME}" apply --server-side \
   -k ../../platform/external-secrets/overlays/dev
