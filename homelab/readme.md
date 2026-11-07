@@ -130,6 +130,20 @@ cluster. For home, set `HOMELAB_HOME_CONTEXT` (and optionally
 execute the script directly: a child process cannot set `KUBECONFIG` in its
 parent shell.
 
+To bootstrap the dev cluster's 1Password token using the configured dev
+context, vault, and item, run:
+
+```shell
+bazel run //homelab/k8s/clusters/dev:bootstrap-token
+```
+
+You can optionally pass a different field label after `--`; the default is
+`credential`:
+
+```shell
+bazel run //homelab/k8s/clusters/dev:bootstrap-token -- credential
+```
+
 ### Home
 
 Runs on Proxmox VMs.

@@ -10,3 +10,8 @@ sh_binary(
     name = "down",
     srcs = ["down.sh"],
 )
+
+sh_binary(
+    name = "bootstrap-token",
+    srcs = ["bootstrap-token.sh"],
+)
