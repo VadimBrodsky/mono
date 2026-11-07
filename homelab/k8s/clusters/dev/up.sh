@@ -25,6 +25,8 @@ kind export kubeconfig \
   --name "$CLUSTER_NAME" \
   --kubeconfig "$KUBECONFIG"
 
+kubectl config use-context "kind-${CLUSTER_NAME}"
+
 kubectl --context "kind-${CLUSTER_NAME}" \
   wait --for=condition=Ready nodes --all --timeout=120s
 

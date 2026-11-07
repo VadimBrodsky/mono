@@ -11,7 +11,7 @@ Example:
 
 The default field name is "credential". Dev uses the kind-homelab-dev context,
 the local dev kubeconfig, and the Private vault. Home requires HOMELAB_HOME_CONTEXT
-and HOMELAB_HOME_VAULT; it uses KUBECONFIG if set, otherwise ~/.kube/config.
+and HOMELAB_HOME_VAULT; it uses HOMELAB_HOME_KUBECONFIG if set, otherwise ~/.kube/config.
 EOF
   exit 2
 }
@@ -36,6 +36,7 @@ case "$environment" in
       echo "error: set HOMELAB_HOME_CONTEXT and HOMELAB_HOME_VAULT for home" >&2
       exit 2
     fi
+    export KUBECONFIG="${HOMELAB_HOME_KUBECONFIG:-$HOME/.kube/config}"
     ;;
   *)
     echo "error: environment must be 'dev' or 'home'" >&2

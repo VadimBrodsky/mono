@@ -101,10 +101,10 @@ HOMELAB_HOME_VAULT='<home-1password-vault>' \
   homelab/k8s/scripts/bootstrap-1password-token.sh home '<home-service-account-item>'
 ```
 
-Home uses `KUBECONFIG` if set, otherwise `~/.kube/config`. The helper writes
-the token only to a temporary file and creates the bootstrap Secret in the
-cluster; the token is not stored in Git. Keep separate Service Accounts and
-token items for dev and home.
+Home uses `HOMELAB_HOME_KUBECONFIG` if set, otherwise `~/.kube/config`. The
+helper writes the token only to a temporary file and creates the bootstrap
+Secret in the cluster; the token is not stored in Git. Keep separate Service
+Accounts and token items for dev and home.
 
 Install Traefik and then apply the dev app resources:
 
@@ -117,16 +117,18 @@ kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
   --context kind-homelab-dev apply -k homelab/k8s/clusters/dev/apps
 ```
 
-After starting the cluster, set the local kubeconfig in your current shell:
+After starting the cluster, select its context in your current shell:
 
 ```shell
-source homelab/k8s/clusters/dev/set-context.sh
+source homelab/k8s/scripts/set-context.sh dev
 ```
 
 `up.sh` also selects `kind-homelab-dev` in the generated kubeconfig. Source
-`set-context.sh` in each new terminal where you want kubectl to use this
-cluster. Do not run it with `bazel run` or execute it directly: a child process
-cannot set `KUBECONFIG` in its parent shell.
+`set-context.sh dev` in each new terminal where you want kubectl to use this
+cluster. For home, set `HOMELAB_HOME_CONTEXT` (and optionally
+`HOMELAB_HOME_KUBECONFIG`) first, then source `set-context.sh home`. Do not
+execute the script directly: a child process cannot set `KUBECONFIG` in its
+parent shell.
 
 ### Home
 
