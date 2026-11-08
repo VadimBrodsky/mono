@@ -66,19 +66,21 @@ Runs locally on the MacBook using kind.
 
 This environment is disposable and intended for testing manifests, images, and Kubernetes behaviour.
 
-```shell
-# start the kind cluster
-bazel run //homelab/k8s/clusters/dev:up
+Create the kind cluster, bootstrap ESO's 1Password token, then install the
+platform components in this order:
 
-# stop the kind cluster
-bazel run //homelab/k8s/clusters/dev:down
+```shell
+bazel run //homelab/k8s/clusters/dev:01_create
+bazel run //homelab/k8s/clusters/dev:02_secret
+bazel run //homelab/k8s/clusters/dev:03_platform
 ```
 
-The startup command installs the Gateway API CRDs and External Secrets
-Operator using pinned Kustomize manifests and server-side apply. It waits for
-their CRDs and ESO deployments to become ready. The startup command requires
-network access to download the pinned release bundles and reapplies them when
-run against an existing cluster.
+`01_create` creates the cluster and kubeconfig. `02_secret` seeds the
+out-of-band 1Password Service Account token. `03_platform` installs Gateway
+API, ESO, cert-manager, and Traefik, then syncs the Cloudflare token and
+requests staging and production certificates. Platform installation requires
+network access to download the pinned release bundles and can be rerun safely.
+Use `bazel run //homelab/k8s/clusters/dev:down` to stop/delete the cluster.
 
 Bootstrap the 1Password Service Account token after starting kind. Create a
 Service Account for the intended vault and store its token in a privileged
@@ -106,13 +108,9 @@ helper writes the token only to a temporary file and creates the bootstrap
 Secret in the cluster; the token is not stored in Git. Keep separate Service
 Accounts and token items for dev and home.
 
-Install Traefik and then apply the dev app resources:
+After platform installation, apply the dev app resources:
 
 ```shell
-kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
-  --context kind-homelab-dev apply --server-side \
-  -k homelab/k8s/platform/traefik/overlays/dev
-
 kubectl --kubeconfig homelab/k8s/clusters/dev/.state/kubeconfig \
   --context kind-homelab-dev apply -k homelab/k8s/clusters/dev/apps
 ```
@@ -123,7 +121,7 @@ After starting the cluster, select its context in your current shell:
 source homelab/k8s/scripts/set-context.sh dev
 ```
 
-`up.sh` also selects `kind-homelab-dev` in the generated kubeconfig. Source
+`01_create.sh` also selects `kind-homelab-dev` in the generated kubeconfig. Source
 `set-context.sh dev` in each new terminal where you want kubectl to use this
 cluster. For home, set `HOMELAB_HOME_CONTEXT` (and optionally
 `HOMELAB_HOME_KUBECONFIG`) first, then source `set-context.sh home`. Do not
@@ -134,14 +132,14 @@ To bootstrap the dev cluster's 1Password token using the configured dev
 context, vault, and item, run:
 
 ```shell
-bazel run //homelab/k8s/clusters/dev:bootstrap-token
+bazel run //homelab/k8s/clusters/dev:02_secret
 ```
 
 You can optionally pass a different field label after `--`; the default is
 `credential`:
 
 ```shell
-bazel run //homelab/k8s/clusters/dev:bootstrap-token -- credential
+bazel run //homelab/k8s/clusters/dev:02_secret -- credential
 ```
 
 ### Home

@@ -2,8 +2,13 @@
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 sh_binary(
-    name = "up",
-    srcs = ["up.sh"],
+    name = "01_create",
+    srcs = ["01_create.sh"],
+)
+
+sh_binary(
+    name = "02_secret",
+    srcs = ["02_secret.sh"],
 )
 
 sh_binary(
@@ -12,6 +17,6 @@ sh_binary(
 )
 
 sh_binary(
-    name = "bootstrap-token",
-    srcs = ["bootstrap-token.sh"],
+    name = "03_platform",
+    srcs = ["03_platform.sh"],
 )
