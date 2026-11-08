@@ -21,6 +21,37 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --entrypoints.traefik.address=:9001
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --entrypoints.websecure.address=:8443
+      - op: add
+        path: /spec/template/spec/containers/0/ports/-
+        value:
+          name: websecure
+          containerPort: 8443
+  - target:
+      group: gateway.networking.k8s.io
+      version: v1
+      kind: Gateway
+      name: traefik
+      namespace: traefik
+    patch: |-
+      - op: add
+        path: /spec/listeners/-
+        value:
+          name: https
+          protocol: HTTPS
+          port: 8443
+          hostname: kind.brodsky.club
+          tls:
+            mode: Terminate
+            certificateRefs:
+              - name: dev-kind-tls
+          allowedRoutes:
+            kinds:
+              - kind: HTTPRoute
+            namespaces:
+              from: All
   - target:
       version: v1
       kind: Service
@@ -40,3 +71,7 @@ patches:
             port: 80
             targetPort: web
             nodePort: 30080
+          - name: websecure
+            port: 443
+            targetPort: websecure
+            nodePort: 30443
