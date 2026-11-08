@@ -5,16 +5,25 @@ metadata:
   namespace: romm
 spec:
   hostnames:
-    - romm.localhost
+    - kind.brodsky.club
   parentRefs:
     - name: traefik
       namespace: traefik
       sectionName: http
+    - name: traefik
+      namespace: traefik
+      sectionName: https
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /
+            value: /romm
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: romm
           port: 8970

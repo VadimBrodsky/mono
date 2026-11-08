@@ -5,16 +5,25 @@ metadata:
   namespace: stash
 spec:
   hostnames:
-    - stash.localhost
+    - kind.brodsky.club
   parentRefs:
     - name: traefik
       namespace: traefik
       sectionName: http
+    - name: traefik
+      namespace: traefik
+      sectionName: https
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /
+            value: /stash
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: stash
           port: 6969

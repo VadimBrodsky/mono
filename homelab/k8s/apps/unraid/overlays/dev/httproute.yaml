@@ -5,16 +5,25 @@ metadata:
   namespace: unraid
 spec:
   hostnames:
-    - tower.localhost
+    - kind.brodsky.club
   parentRefs:
     - name: traefik
       namespace: traefik
       sectionName: http
+    - name: traefik
+      namespace: traefik
+      sectionName: https
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /
+            value: /tower
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: unraid
           port: 443

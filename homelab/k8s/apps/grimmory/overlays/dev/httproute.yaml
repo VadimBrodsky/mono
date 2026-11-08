@@ -5,16 +5,25 @@ metadata:
   namespace: grimmory
 spec:
   hostnames:
-    - grimm.localhost
+    - kind.brodsky.club
   parentRefs:
     - name: traefik
       namespace: traefik
       sectionName: http
+    - name: traefik
+      namespace: traefik
+      sectionName: https
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /
+            value: /grimm
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: grimmory
           port: 6060

@@ -5,16 +5,25 @@ metadata:
   namespace: immich
 spec:
   hostnames:
-    - immich.localhost
+    - kind.brodsky.club
   parentRefs:
     - name: traefik
       namespace: traefik
       sectionName: http
+    - name: traefik
+      namespace: traefik
+      sectionName: https
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /
+            value: /immich
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: immich
           port: 8340

@@ -6,11 +6,14 @@ metadata:
   namespace: biggie
 spec:
   hostnames:
-  - biggie.localhost
+  - kind.brodsky.club
   parentRefs:
   - name: traefik
     namespace: traefik
     sectionName: http
+  - name: traefik
+    namespace: traefik
+    sectionName: https
   rules:
   - backendRefs:
     - name: biggie
@@ -18,4 +21,10 @@ spec:
     matches:
     - path:
         type: PathPrefix
-        value: /
+        value: /biggie
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /

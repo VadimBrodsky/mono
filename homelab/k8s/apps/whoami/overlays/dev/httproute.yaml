@@ -7,13 +7,22 @@ spec:
     - name: traefik
       namespace: traefik
       sectionName: http
+    - name: traefik
+      namespace: traefik
+      sectionName: https
   hostnames:
-    - whoami-gatewayapi.localhost
+    - kind.brodsky.club
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /
+            value: /whoami
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: whoami
           port: 80
