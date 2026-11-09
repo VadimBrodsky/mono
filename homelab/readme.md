@@ -143,6 +143,14 @@ cluster. For home, set `HOMELAB_HOME_CONTEXT` (and optionally
 execute the script directly: a child process cannot set `KUBECONFIG` in its
 parent shell.
 
+#### Traefik
+
+Connect to admin panel
+
+```shell
+kubectl --context kind-homelab-dev -n traefik port-forward deployment/traefik 9001:9001
+```
+
 ### Home
 
 Runs on Proxmox VMs.
