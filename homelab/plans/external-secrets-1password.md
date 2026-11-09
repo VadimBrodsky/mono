@@ -69,10 +69,12 @@ Cloudflare credential, or rendered Kubernetes Secret data may be committed.
    the bootstrap Kubernetes Secret using `kubectl --dry-run=client` piped to
    `kubectl apply`. It must not print or log the token, use shell tracing, or
    leave files in the repository.
-5. Argo CD applies the cluster's SecretStore/ClusterSecretStore and
-   ExternalSecret resources only after ESO is ready and the bootstrap token
-   Secret exists. Use sync waves or separate applications/stages to enforce
-   this dependency.
+5. Flux applies the cluster's SecretStore/ClusterSecretStore and ExternalSecret
+   resources only after ESO is ready and the bootstrap token Secret exists. In
+   dev, keep these resources out of the initial Flux root and explicitly
+   activate the post-secret Flux Kustomization after the bootstrap helper
+   verifies the Secret is present. Use separate Flux Kustomizations and
+   `dependsOn` for the ESO, secret sync, and certificate stages.
 6. ESO fetches the referenced 1Password item and creates the target Secret.
    cert-manager issuer/certificate resources are applied after the Cloudflare
    token Secret is synchronized.

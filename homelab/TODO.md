@@ -2,7 +2,7 @@
 
 ## Production readiness
 
-- [ ] Provision Proxmox VMs, bootstrap Kubernetes, and deploy Argo CD.
+- [ ] Provision Proxmox VMs, bootstrap Kubernetes, and install Flux.
 - [ ] Add kube-vip for a stable control-plane VIP; test API failover.
 - [ ] Install cert-manager and configure a production issuer; keep credentials and private keys out of Git.
 - [ ] Enable HTTPS on the home Gateway with managed certificates; redirect HTTP to HTTPS.
