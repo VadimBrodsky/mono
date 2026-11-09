@@ -10,3 +10,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - kind.brodsky.club
+    - '*.kind.brodsky.club'
