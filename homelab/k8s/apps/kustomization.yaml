@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Home app declarations are grouped here; each declaration lives beside its app.
+resources:
+  - biggie/overlays/home/flux
+  - unraid/overlays/home/flux
+  - audiobookshelf/overlays/home/flux
+  - grimmory/overlays/home/flux
+  - immich/overlays/home/flux
+  - romm/overlays/home/flux
+  - stash/overlays/home/flux

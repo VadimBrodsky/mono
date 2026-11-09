@@ -9,3 +9,4 @@ resources:
   - endpointslice.yaml
   - unraid-ca.yaml
   - backend-tls-policy.yaml
+  - httproute.yaml

@@ -3,4 +3,32 @@ kind: Kustomization
 
 resources:
   - ../../base
-  - httproute.yaml
+
+patches:
+  - target:
+      group: gateway.networking.k8s.io
+      version: v1
+      kind: HTTPRoute
+      name: unraid
+      namespace: unraid
+    patch: |-
+      - op: replace
+        path: /spec/hostnames/0
+        value: kind.brodsky.club
+      - op: add
+        path: /spec/parentRefs/0
+        value:
+          name: traefik
+          namespace: traefik
+          sectionName: http
+      - op: replace
+        path: /spec/rules/0/matches/0/path/value
+        value: /tower
+      - op: add
+        path: /spec/rules/0/filters
+        value:
+          - type: URLRewrite
+            urlRewrite:
+              path:
+                type: ReplacePrefixMatch
+                replacePrefixMatch: /

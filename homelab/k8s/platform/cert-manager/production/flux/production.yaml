@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: certificates-production
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./homelab/k8s/platform/cert-manager/production
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  timeout: 15m
+  dependsOn:
+    - name: certificates-staging
+  healthChecks:
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      name: dev-kind-production
+      namespace: traefik
