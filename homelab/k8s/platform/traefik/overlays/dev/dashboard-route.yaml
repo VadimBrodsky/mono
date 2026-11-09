@@ -8,14 +8,14 @@ spec:
     - name: traefik
       sectionName: http
     - name: traefik
-      sectionName: https
+      sectionName: https-wildcard
   hostnames:
-    - kind.brodsky.club
+    - traefik.kind.brodsky.club
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /dashboard
+            value: /
       backendRefs:
         - name: traefik
           port: 9001
