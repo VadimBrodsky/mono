@@ -6,23 +6,18 @@ cd "${BUILD_WORKSPACE_DIRECTORY:?Run this script using bazel run}/homelab/k8s/cl
 
 export KUBECONFIG="$PWD/.state/kubeconfig"
 CONTEXT="kind-homelab-dev"
-FLUX_VERSION="v2.10.0"
 
-command -v flux >/dev/null || { echo "error: Flux CLI ${FLUX_VERSION} is required" >&2; exit 1; }
 command -v kubectl >/dev/null || { echo "error: kubectl is required" >&2; exit 1; }
-
-client_version="$(flux version --client -o json)"
-if [[ "$client_version" != *"2.10.0"* ]]; then
-  echo "error: expected Flux CLI ${FLUX_VERSION}; found ${client_version}" >&2
-  exit 1
-fi
 
 kubectl --context "$CONTEXT" wait \
   --for=condition=Ready nodes --all --timeout=120s
 
-flux install \
-  --version="$FLUX_VERSION" \
-  --components=source-controller,kustomize-controller
+kubectl --context "$CONTEXT" apply -k ../../platform/flux/install
+
+for deployment in source-controller kustomize-controller; do
+  kubectl --context "$CONTEXT" -n flux-system \
+    rollout status "deployment/${deployment}" --timeout=300s
+done
 
 kubectl --context "$CONTEXT" apply -k ../../platform/flux/dev/bootstrap
 
