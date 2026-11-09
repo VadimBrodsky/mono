@@ -59,6 +59,29 @@ patches:
             namespaces:
               from: All
   - target:
+      group: gateway.networking.k8s.io
+      version: v1
+      kind: Gateway
+      name: traefik
+      namespace: traefik
+    patch: |-
+      - op: add
+        path: /spec/listeners/-
+        value:
+          name: https-wildcard
+          protocol: HTTPS
+          port: 8443
+          hostname: '*.kind.brodsky.club'
+          tls:
+            mode: Terminate
+            certificateRefs:
+              - name: dev-kind-tls
+          allowedRoutes:
+            kinds:
+              - kind: HTTPRoute
+            namespaces:
+              from: All
+  - target:
       version: v1
       kind: Service
       name: traefik
