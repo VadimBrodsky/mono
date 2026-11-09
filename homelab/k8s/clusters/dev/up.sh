@@ -2,7 +2,8 @@
 set -euo pipefail
 umask 077
 
-cd "${BUILD_WORKSPACE_DIRECTORY:?Run this script using bazel run}/homelab/k8s/clusters/dev"
+workspace="${BUILD_WORKSPACE_DIRECTORY:?Run this script using bazel run}"
+cd "$workspace/homelab/k8s/clusters/dev"
 
 export KIND_EXPERIMENTAL_PROVIDER=docker
 export KUBECONFIG="$PWD/.state/kubeconfig"
@@ -31,3 +32,6 @@ kubectl --context "kind-${CLUSTER_NAME}" \
   wait --for=condition=Ready nodes --all --timeout=120s
 
 kubectl --context "kind-${CLUSTER_NAME}" get nodes
+
+"$workspace/homelab/k8s/scripts/bootstrap-1password-token.sh" \
+  dev homelab-dev-service-account "$@"

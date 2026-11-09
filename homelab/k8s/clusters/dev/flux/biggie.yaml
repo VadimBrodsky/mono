@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dev-biggie
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./homelab/k8s/apps/biggie/overlays/dev
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: homelab
+  timeout: 30m
+  dependsOn:
+    - name: traefik

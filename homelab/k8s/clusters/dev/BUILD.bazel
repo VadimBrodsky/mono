@@ -1,16 +1,10 @@
 # homelab/k8s/clusters/dev/BUILD.bazel
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
-# 01 create kind cluster
+# Create kind cluster and seed its out-of-band 1Password token.
 sh_binary(
     name = "up",
     srcs = ["up.sh"],
-)
-
-# 02 add 1password secret
-sh_binary(
-    name = "secret",
-    srcs = ["secret.sh"],
 )
 
 # destroy the cluster
@@ -19,14 +13,8 @@ sh_binary(
     srcs = ["down.sh"],
 )
 
-# 03 install flux
+# Install Flux and begin cluster reconciliation.
 sh_binary(
     name = "flux",
     srcs = ["flux.sh"],
-)
-
-# 04 activate all apps that depend on the ESO
-sh_binary(
-    name = "activate",
-    srcs = ["activate.sh"],
 )

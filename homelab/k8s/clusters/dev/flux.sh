@@ -19,7 +19,7 @@ for deployment in source-controller kustomize-controller; do
     rollout status "deployment/${deployment}" --timeout=300s
 done
 
-kubectl --context "$CONTEXT" apply -k ../../platform/flux/dev/bootstrap
+kubectl --context "$CONTEXT" apply -k flux
 
 kubectl --context "$CONTEXT" -n flux-system wait \
   --for=condition=Ready gitrepository/homelab --timeout=300s
@@ -31,6 +31,4 @@ for kustomization in gateway-api-crds external-secrets cert-manager; do
     --for=condition=Ready "kustomization/${kustomization}" --timeout=1800s
 done
 
-echo "Flux and prerequisite platform components are ready."
-echo "Next: bazel run //homelab/k8s/clusters/dev:secret"
-echo "Then: bazel run //homelab/k8s/clusters/dev:activate"
+echo "Flux, platform prerequisites, and dev apps are ready."
