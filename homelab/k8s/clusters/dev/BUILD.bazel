@@ -1,22 +1,32 @@
 # homelab/k8s/clusters/dev/BUILD.bazel
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
+# 01 create kind cluster
 sh_binary(
-    name = "01_create",
-    srcs = ["01_create.sh"],
+    name = "up",
+    srcs = ["up.sh"],
 )
 
+# 02 add 1password secret
 sh_binary(
-    name = "02_secret",
-    srcs = ["02_secret.sh"],
+    name = "secret",
+    srcs = ["secret.sh"],
 )
 
+# destroy the cluster
 sh_binary(
     name = "down",
     srcs = ["down.sh"],
 )
 
+# 03 install flux
 sh_binary(
-    name = "03_platform",
-    srcs = ["03_platform.sh"],
+    name = "flux",
+    srcs = ["flux.sh"],
+)
+
+# 04 activate all apps that depend on the ESO
+sh_binary(
+    name = "activate",
+    srcs = ["activate.sh"],
 )
