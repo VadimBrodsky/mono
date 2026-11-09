@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - dashboard-route.yaml
 
 patches:
   - target:
@@ -21,6 +22,11 @@ patches:
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --entrypoints.traefik.address=:9001
+      - op: add
+        path: /spec/template/spec/containers/0/ports/-
+        value:
+          name: traefik
+          containerPort: 9001
       - op: add
         path: /spec/template/spec/containers/0/args/-
         value: --entrypoints.websecure.address=:8443
@@ -75,3 +81,6 @@ patches:
             port: 443
             targetPort: websecure
             nodePort: 30443
+          - name: traefik
+            port: 9001
+            targetPort: traefik
