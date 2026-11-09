@@ -75,6 +75,12 @@ kubectl --context "$CONTEXT" apply --server-side \
 kubectl --context "$CONTEXT" -n cert-manager \
   wait --for=condition=Ready externalsecret/cloudflare-api-token --timeout=300s
 
+# Certificates are stored in Traefik's namespace, which Traefik normally creates.
+# Create it here first because certificate issuance must finish before Traefik is applied.
+kubectl --context "$CONTEXT" create namespace traefik \
+  --dry-run=client -o yaml \
+  | kubectl --context "$CONTEXT" apply -f - >/dev/null
+
 # Validate DNS-01 with staging before requesting a trusted production cert.
 kubectl --context "$CONTEXT" apply --server-side \
   -k ../../platform/cert-manager/dev
