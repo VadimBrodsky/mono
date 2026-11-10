@@ -4,14 +4,14 @@ umask 077
 
 usage() {
   cat >&2 <<'EOF'
-Usage: bootstrap-1password-token.sh <dev|home> <1password-item-name> [field-name]
+Usage: bootstrap-1password-token.sh <dev|prod> <1password-item-name> [field-name]
 
 Example:
   bootstrap-1password-token.sh dev homelab-dev-service-account
 
 The default field name is "credential". Dev uses the kind-homelab-dev context,
-the local dev kubeconfig, and the Private vault. Home requires HOMELAB_HOME_CONTEXT
-and HOMELAB_HOME_VAULT; it uses HOMELAB_HOME_KUBECONFIG if set, otherwise ~/.kube/config.
+the local dev kubeconfig, and the Private vault. Prod requires HOMELAB_PROD_CONTEXT
+and HOMELAB_PROD_VAULT; it uses HOMELAB_PROD_KUBECONFIG if set, otherwise ~/.kube/config.
 EOF
   exit 2
 }
@@ -29,17 +29,17 @@ case "$environment" in
     export KUBECONFIG="$(cd -- "$script_dir/../clusters/dev" && pwd)/.state/kubeconfig"
     vault="Private"
     ;;
-  home)
-    context="${HOMELAB_HOME_CONTEXT:-}"
-    vault="${HOMELAB_HOME_VAULT:-}"
+  prod)
+    context="${HOMELAB_PROD_CONTEXT:-}"
+    vault="${HOMELAB_PROD_VAULT:-}"
     if [[ -z "$context" || -z "$vault" ]]; then
-      echo "error: set HOMELAB_HOME_CONTEXT and HOMELAB_HOME_VAULT for home" >&2
+      echo "error: set HOMELAB_PROD_CONTEXT and HOMELAB_PROD_VAULT for prod" >&2
       exit 2
     fi
-    export KUBECONFIG="${HOMELAB_HOME_KUBECONFIG:-$HOME/.kube/config}"
+    export KUBECONFIG="${HOMELAB_PROD_KUBECONFIG:-$HOME/.kube/config}"
     ;;
   *)
-    echo "error: environment must be 'dev' or 'home'" >&2
+    echo "error: environment must be 'dev' or 'prod'" >&2
     usage
     ;;
 esac

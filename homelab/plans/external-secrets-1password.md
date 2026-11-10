@@ -4,7 +4,7 @@
 
 Use External Secrets Operator (ESO) with 1Password's SDK provider to populate
 Kubernetes Secrets from 1Password items. Manage ESO and its configuration with
-Kustomize, not Helm. Use the same design for kind dev and the home cluster, with
+Kustomize, not Helm. Use the same design for kind dev and the prod cluster, with
 separate cluster credentials and vault configuration.
 
 Initial use case: supply cert-manager with a Cloudflare API token for DNS-01
@@ -21,7 +21,7 @@ committed to Git.
   deploying a Connect server; ESO accesses 1Password using a 1Password Service
   Account token.
 - Use a separate least-privilege 1Password Service Account and dedicated vault
-  for each cluster (dev and home). Put the bootstrap token in a separate
+  for each cluster (dev and prod). Put the bootstrap token in a separate
   privileged 1Password location that the Service Account cannot read.
 - Create the bootstrap token Secret out of band with a local helper script and
   the 1Password CLI. Never define its value in a Git manifest.
@@ -40,17 +40,17 @@ Adapt names to existing cluster conventions during implementation:
 homelab/k8s/platform/external-secrets/
   base/                         # pinned ESO release manifest / Kustomization
   overlays/dev/                 # dev-specific install settings if required
-  overlays/home/                # home-specific install settings if required
+  overlays/prod/                # prod-specific install settings if required
 
 homelab/k8s/platform/onepassword/
   base/                         # common store/ExternalSecret patterns if useful
   overlays/dev/                 # dev vault and item references
-  overlays/home/                # home vault and item references
+  overlays/prod/                # prod vault and item references
 
 homelab/k8s/clusters/dev/
   bootstrap-secrets.sh          # or a shared script invoked with "dev"
-homelab/k8s/clusters/home/
-  bootstrap-secrets.sh          # or the same shared script invoked with "home"
+homelab/k8s/clusters/prod/
+  bootstrap-secrets.sh          # or the same shared script invoked with "prod"
 ```
 
 The bootstrap scripts and public configuration may be committed. No token,
@@ -59,11 +59,11 @@ Cloudflare credential, or rendered Kubernetes Secret data may be committed.
 ## Bootstrap workflow
 
 1. Create the cluster and install ESO's pinned Kustomize target. For kind, add
-   this to the platform bootstrap sequence; home gets the same component from
+   this to the platform bootstrap sequence; prod gets the same component from
    its cluster setup/GitOps entry point.
 2. Wait for ESO CRDs and workloads to be ready.
 3. On a trusted Mac, sign in to 1Password CLI and run the bootstrap helper with
-   an explicit environment/context (`dev` or `home`).
+   an explicit environment/context (`dev` or `prod`).
 4. The helper reads the matching Service Account token from 1Password into a
    short-lived, permission-restricted temporary file, then creates or updates
    the bootstrap Kubernetes Secret using `kubectl --dry-run=client` piped to
@@ -84,12 +84,12 @@ token securely in 1Password so the bootstrap helper can retrieve it. If the
 token is revoked or replaced, update the bootstrap Secret and restart/reconcile
 ESO as needed.
 
-## Dev and home configuration
+## Dev and prod configuration
 
 - **Dev:** its own Service Account, vault, bootstrap Secret, and store; Cloudflare
   item/permissions scoped to dev needs. Used with `kind.brodsky.club` and
   `*.kind.brodsky.club` certificate requests.
-- **Home:** separate Service Account, vault, bootstrap Secret, and store. Used
+- **Prod:** separate Service Account, vault, bootstrap Secret, and store. Used
   with production `brodsky.club` names and certificates.
 - Keep the manifest structure and secret field mapping consistent; only
   environment-specific vault/item names, store references, and certificate

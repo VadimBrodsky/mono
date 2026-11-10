@@ -1,11 +1,11 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: home-romm
+  name: prod-romm
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./homelab/k8s/apps/romm/overlays/home
+  path: ./homelab/k8s/apps/romm/overlays/prod
   prune: true
   sourceRef:
     kind: GitRepository

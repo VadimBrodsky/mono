@@ -5,20 +5,20 @@
 
 if [[ -n "${ZSH_VERSION:-}" ]]; then
   if [[ "$ZSH_EVAL_CONTEXT" != *:file ]]; then
-    echo "Source this script with an environment: source ${(%):-%x} dev|home" >&2
+    echo "Source this script with an environment: source ${(%):-%x} dev|prod" >&2
     return 2
   fi
   SCRIPTS_DIR="${${(%):-%x}:A:h}"
 else
   if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-    echo "Source this script with an environment: source ${BASH_SOURCE[0]} dev|home" >&2
+    echo "Source this script with an environment: source ${BASH_SOURCE[0]} dev|prod" >&2
     exit 2
   fi
   SCRIPTS_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
 if [[ $# -ne 1 ]]; then
-  echo "Usage: source homelab/k8s/scripts/set-context.sh <dev|home>" >&2
+  echo "Usage: source homelab/k8s/scripts/set-context.sh <dev|prod>" >&2
   return 2
 fi
 
@@ -27,16 +27,16 @@ case "$1" in
     KUBECONFIG="$(cd -- "$SCRIPTS_DIR/../clusters/dev" && pwd)/.state/kubeconfig"
     CONTEXT="kind-homelab-dev"
     ;;
-  home)
-    CONTEXT="${HOMELAB_HOME_CONTEXT:-}"
+  prod)
+    CONTEXT="${HOMELAB_PROD_CONTEXT:-}"
     if [[ -z "$CONTEXT" ]]; then
-      echo "error: set HOMELAB_HOME_CONTEXT to the home cluster's kubectl context" >&2
+      echo "error: set HOMELAB_PROD_CONTEXT to the prod cluster's kubectl context" >&2
       return 2
     fi
-    KUBECONFIG="${HOMELAB_HOME_KUBECONFIG:-$HOME/.kube/config}"
+    KUBECONFIG="${HOMELAB_PROD_KUBECONFIG:-$HOME/.kube/config}"
     ;;
   *)
-    echo "error: environment must be 'dev' or 'home'" >&2
+    echo "error: environment must be 'dev' or 'prod'" >&2
     return 2
     ;;
 esac

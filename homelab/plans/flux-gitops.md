@@ -18,7 +18,7 @@ reliable, including the manual 1Password token step.
   `v2.10.0`; the dev kind nodes must run Kubernetes `v1.35.2` or newer to meet
   that release's compatibility requirements. The CLI is optional.
 - Keep Flux installation/bootstrap distinct from the Kustomize paths Flux
-  reconciles. Use a small cluster-specific Flux root for home and dev, with
+  reconciles. Use a small cluster-specific Flux root for prod and dev, with
   `GitRepository` and `Kustomization` resources.
 - Install Flux from the official, pinned v2.10.0 controller/CRD manifest bundle
   through Kustomize and `kubectl`; the Flux CLI is optional and is not a
@@ -45,9 +45,9 @@ homelab/k8s/clusters/dev/flux/
   sync.yaml                      # GitRepository and root reconciliation object
   ...                            # dev platform and app Flux declarations
 
-homelab/k8s/clusters/home/flux/
-  kustomization.yaml             # home cluster Flux root and app selection
-  ...                            # home app Flux declarations
+homelab/k8s/clusters/prod/flux/
+  kustomization.yaml             # prod cluster Flux root and app selection
+  ...                            # prod app Flux declarations
 
 homelab/k8s/apps/<app>/
   base/                          # shared app resources
@@ -56,7 +56,7 @@ homelab/k8s/apps/<app>/
 
 Each cluster Flux root reconciles its own selected app overlays. The dev root
 also declares platform dependencies and orders their reconciliation before
-apps. Home platform configuration remains separate until its 1Password and
+apps. Prod platform configuration remains separate until its 1Password and
 Traefik resources are managed in-repository.
 
 ## Dev dependency and bootstrap sequence
@@ -79,20 +79,20 @@ Traefik resources are managed in-repository.
 For a fresh cluster rebuild, repeat the sequence from step 1. `up.sh` refreshes
 the token Secret before Flux is installed or starts reconciliation.
 
-## Home cluster
+## Prod cluster
 
-- Replace the Argo CD `home-apps` Application with per-app Flux Kustomizations
-  in `clusters/home/flux/`.
-- Ensure the home Flux bootstrap uses the public monorepo URL and the intended
-  branch/path. Preserve existing home app overlays and their behavior.
-- If home platform resources are brought under Flux as part of this work,
+- Replace the Argo CD `prod-apps` Application with per-app Flux Kustomizations
+  in `clusters/prod/flux/`.
+- Ensure the prod Flux bootstrap uses the public monorepo URL and the intended
+  branch/path. Preserve existing prod app overlays and their behavior.
+- If prod platform resources are brought under Flux as part of this work,
   define their CRD/controller dependencies explicitly and retain the separate
-  home 1Password bootstrap step. Do not make home depend on the dev cluster's
+  prod 1Password bootstrap step. Do not make prod depend on the dev cluster's
   activation or credentials.
 
 ## Implementation checklist
 
-1. [x] Add Flux bootstrap and source/reconciliation manifests for home and dev.
+1. [x] Add Flux bootstrap and source/reconciliation manifests for prod and dev.
 2. [x] Define separate Flux Kustomizations for CRD/controller installation and
    resources that consume those CRDs. Add health checks/readiness criteria for
    Gateway API, ESO, cert-manager, and Traefik as appropriate.
@@ -100,7 +100,7 @@ the token Secret before Flux is installed or starts reconciliation.
    installation; remove separate `secret` and `activate` targets.
 4. [x] Update dev Bazel targets and bootstrap instructions to reflect the
    combined cluster/token bootstrap followed by Flux installation.
-5. [x] Remove `homelab/k8s/argocd/home-apps.yaml` and the obsolete Argo CD directory
+5. [x] Remove `homelab/k8s/argocd/prod-apps.yaml` and the obsolete Argo CD directory
    (including `.keep`). Remove Argo-specific references from relevant plans and
    documentation, replacing the Argo sync-wave description in
    `homelab/plans/external-secrets-1password.md` with the Flux staged dependency
@@ -122,7 +122,7 @@ the token Secret before Flux is installed or starts reconciliation.
 - [ ] Verify ESO synchronizes the Cloudflare token, staging validation succeeds,
   the production certificate becomes Ready, Traefik starts with HTTPS, and dev
   apps reconcile afterward.
-- [ ] Verify the home Flux Kustomizations reconcile the selected home app overlays.
+- [ ] Verify the prod Flux Kustomizations reconcile the selected prod app overlays.
 - [x] Confirm no credentials or Secret values were added to Git and no active
   Argo CD configuration remains.
 - [ ] Review runtime logs during cluster bootstrap to confirm no credentials or
@@ -130,11 +130,11 @@ the token Secret before Flux is installed or starts reconciliation.
 
 ## Out of scope / decisions to confirm
 
-- Migrating home platform components; the home Flux root currently selects apps
-  only. Existing home platform services must already be available for app
+- Migrating prod platform components; the prod Flux root currently selects apps
+  only. Existing prod platform services must already be available for app
   manifests that depend on them.
 - Changing other application manifests, certificate policy, DNS, or the existing
-  ESO/1Password design. Apps with both dev and home routes now share the base
+  ESO/1Password design. Apps with both dev and prod routes now share the base
   HTTPRoute and express dev-only route differences as inline Kustomize patches;
   the dev-only `whoami` route remains in its dev overlay.
 - Replacing the manual 1Password token step with an automated secret system.

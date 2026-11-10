@@ -3,7 +3,7 @@
 ## Goal
 
 Serve kind dev applications over HTTPS on the machine running kind, using
-`kind.brodsky.club` as the dev domain. App hostnames mirror home with `kind`
+`kind.brodsky.club` as the dev domain. App hostnames mirror prod with `kind`
 inserted before the zone, for example `grimm.kind.brodsky.club` alongside
 `grimm.brodsky.club`.
 
@@ -55,7 +55,7 @@ of Git.
 
 5. **Update and validate dev routes**
    - Change dev HTTPRoute hostnames from `<app>.localhost` to
-     `<app>.kind.brodsky.club`, preserving home hostnames and routes.
+     `<app>.kind.brodsky.club`, preserving prod hostnames and routes.
    - Render the dev Kustomization and check the Gateway/Certificate resources.
    - Apply to kind; verify the certificate becomes Ready, HTTPS presents the
      expected certificate, and representative app routes work.
@@ -63,7 +63,7 @@ of Git.
 
 ## Out of scope
 
-- Home cluster issuer and HTTPS migration; home will use Cloudflare DNS-01
+- Prod cluster issuer and HTTPS migration; prod will use Cloudflare DNS-01
   separately with `brodsky.club` hostnames.
 - HTTP-to-HTTPS redirects and HSTS; consider them after HTTPS works. Avoid
   HSTS `includeSubDomains` or preload for dev.

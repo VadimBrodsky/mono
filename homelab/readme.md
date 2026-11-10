@@ -2,7 +2,7 @@
 
 Infrastructure and Kubernetes configuration for the **homelab**, managed alongside application code in this monorepo.
 
-The setup separates VM provisioning, cluster bootstrap, and Kubernetes workloads. A local kind cluster provides an environment for experimentation before promoting configuration to the home cluster through Git and Flux.
+The setup separates VM provisioning, cluster bootstrap, and Kubernetes workloads. A local kind cluster provides an environment for experimentation before promoting configuration to the prod cluster through Git and Flux.
 
 ## Folder structure
 
@@ -17,13 +17,13 @@ homelab/
     │       ├── base/
     │       └── overlays/
     │           ├── dev/
-    │           └── home/
+    │           └── prod/
     ├── clusters/
     │   ├── dev/
     │   │   ├── kind.yaml       # Local kind cluster configuration
     │   │   └── flux/           # Dev Flux root and selected declarations
-    │   └── home/
-    │       └── flux/           # Home Flux root and selected declarations
+    │   └── prod/
+    │       └── flux/           # Prod Flux root and selected declarations
     └── platform/               # Shared cluster services and controllers
         ├── flux/install/       # Pinned Flux controller and CRD bundle
         ├── gateway-api/        # Cluster-wide Gateway API CRDs
@@ -37,7 +37,7 @@ This tree summarizes the directory layout rather than listing every manifest. Th
 
 ### Infrastructure: `terraform/proxmox/`
 
-Provisions the VMs that will host the home Kubernetes cluster.
+Provisions the VMs that will host the prod Kubernetes cluster.
 
 Intended responsibilities include VM resources, disks, network configuration, and initial VM settings. Kubernetes application deployment belongs under `k8s/`, not Terraform.
 
@@ -107,19 +107,19 @@ bazel run //homelab/k8s/clusters/dev:up -- token
 
 The helper targets the dev context using the local kubeconfig and `Private` vault. It
 looks up the item's `credential` field by name, checks the 1Password CLI session
-with `op whoami`, and requires `op`, `jq`, and `kubectl`. For home, set its
-context and vault before running the same helper with the home item name:
+with `op whoami`, and requires `op`, `jq`, and `kubectl`. For prod, set its
+context and vault before running the same helper with the prod item name:
 
 ```shell
-HOMELAB_HOME_CONTEXT='<home-kubectl-context>' \
-HOMELAB_HOME_VAULT='<home-1password-vault>' \
-  homelab/k8s/scripts/bootstrap-1password-token.sh home '<home-service-account-item>'
+HOMELAB_PROD_CONTEXT='<prod-kubectl-context>' \
+HOMELAB_PROD_VAULT='<prod-1password-vault>' \
+  homelab/k8s/scripts/bootstrap-1password-token.sh prod '<prod-service-account-item>'
 ```
 
-Home uses `HOMELAB_HOME_KUBECONFIG` if set, otherwise `~/.kube/config`. The
+Prod uses `HOMELAB_PROD_KUBECONFIG` if set, otherwise `~/.kube/config`. The
 helper writes the token only to a temporary file and creates the bootstrap
 Secret in the cluster; the token is not stored in Git. Keep separate Service
-Accounts and token items for dev and home.
+Accounts and token items for dev and prod.
 
 Inspect and reconcile Flux resources with the dev kubeconfig selected:
 
@@ -138,8 +138,8 @@ source homelab/k8s/scripts/set-context.sh dev
 
 `up.sh` also selects `kind-homelab-dev` in the generated kubeconfig. Source
 `set-context.sh dev` in each new terminal where you want kubectl to use this
-cluster. For home, set `HOMELAB_HOME_CONTEXT` (and optionally
-`HOMELAB_HOME_KUBECONFIG`) first, then source `set-context.sh home`. Do not
+cluster. For prod, set `HOMELAB_PROD_CONTEXT` (and optionally
+`HOMELAB_PROD_KUBECONFIG`) first, then source `set-context.sh prod`. Do not
 execute the script directly: a child process cannot set `KUBECONFIG` in its
 parent shell.
 
@@ -151,31 +151,31 @@ Connect to admin panel
 kubectl --context kind-homelab-dev -n traefik port-forward deployment/traefik 9001:9001
 ```
 
-### Home
+### Prod
 
 Runs on Proxmox VMs.
 
 - Infrastructure configuration: `terraform/proxmox/`
-- Flux entry point: `k8s/clusters/home/flux/`
-- Flux reconciles each selected home app overlay from `k8s/apps/` independently.
-- Application customizations: `k8s/apps/*/overlays/home/`
-- Flux bootstrap configuration: `k8s/clusters/home/flux/`
+- Flux entry point: `k8s/clusters/prod/flux/`
+- Flux reconciles each selected prod app overlay from `k8s/apps/` independently.
+- Application customizations: `k8s/apps/*/overlays/prod/`
+- Flux bootstrap configuration: `k8s/clusters/prod/flux/`
 
 Apply the pinned Flux controller and CRD bundle, then apply the cluster Flux
 root. These steps use `kubectl` and do not require the Flux CLI:
 
 ```shell
 kubectl apply -k homelab/k8s/platform/flux/install
-kubectl apply -k homelab/k8s/clusters/home/flux
+kubectl apply -k homelab/k8s/clusters/prod/flux
 ```
 
-The home Flux root selects only its declared apps. Home platform and 1Password
+The prod Flux root selects only its declared apps. Prod platform and 1Password
 reconciliation remain separate from this app selection. The Flux CLI remains
 optional for status and reconciliation commands.
 
 ## Workflow
 
-Initial home-cluster setup:
+Initial prod-cluster setup:
 
 ```text
 Provision VMs → Bootstrap Kubernetes → Install Flux → Deploy from Git
@@ -184,7 +184,7 @@ Provision VMs → Bootstrap Kubernetes → Install Flux → Deploy from Git
 Ongoing development:
 
 ```text
-Edit manifests → Test in kind → Update home configuration → Merge → Flux reconciles
+Edit manifests → Test in kind → Update prod configuration → Merge → Flux reconciles
 ```
 
 Share application configuration between environments where practical. Keep differences such as image references, hostnames, resource sizing, and storage choices in environment overlays.
