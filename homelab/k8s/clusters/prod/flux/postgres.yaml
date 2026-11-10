@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./homelab/k8s/apps/postgres/base
+  path: ./homelab/k8s/apps/postgres/overlays/prod
   prune: true
   sourceRef:
     kind: GitRepository

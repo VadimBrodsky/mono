@@ -69,6 +69,20 @@ Runs locally on the MacBook using kind.
 
 This environment is disposable and intended for testing manifests, images, and Kubernetes behaviour.
 
+The dev apps use a separate PostgreSQL 15.17 instance running in OrbStack
+Docker, not the production database. Start it before using database-backed dev
+apps:
+
+```shell
+docker compose -f homelab/k8s/clusters/dev/external/postgres/docker-compose.yaml up -d
+```
+
+The Compose service publishes port `15432` on the Mac; the dev Kubernetes
+Service forwards port `5432` to it. Its named Docker volume persists data across
+container restarts and `docker compose down`. Use `docker compose down -v` only
+when you intend to delete the dev database data. Dev-only credentials are in
+the Compose file and must not be reused in production.
+
 Create the kind cluster, seed the 1Password token, then bootstrap Flux:
 
 ```shell

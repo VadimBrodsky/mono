@@ -1,0 +1,21 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+
+addressType: IPv4
+endpoints:
+  - addresses:
+      # OrbStack's host.docker.internal address from the kind node.
+      - 0.250.250.254
+    conditions:
+      ready: true
+
+metadata:
+  labels:
+    endpointslice.kubernetes.io/managed-by: homelab-manual
+    kubernetes.io/service-name: postgres
+  name: postgres
+
+ports:
+  - name: postgres
+    port: 15432
+    protocol: TCP

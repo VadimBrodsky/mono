@@ -6,4 +6,3 @@ namespace: postgres
 resources:
   - namespace.yaml
   - service.yaml
-  - endpointslice.yaml
