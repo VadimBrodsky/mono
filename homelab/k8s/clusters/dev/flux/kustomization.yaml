@@ -10,6 +10,7 @@ resources:
   - certificates-staging.yaml
   - certificates-production.yaml
   - traefik.yaml
+  - radar.yaml
   - whoami.yaml
   - biggie.yaml
   - unraid.yaml

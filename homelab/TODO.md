@@ -10,4 +10,5 @@
 - [ ] Verify HTTP/2 and validated TLS to Proxmox and Unraid; plan certificate rotation.
 - [ ] Test DNS, renewals, redirects, HSTS, WebSockets, and external access.
 - [ ] Migrate KitchenSpeaker, PBS, Portainer, and `sync.brodsky.club` routes to Kubernetes.
+- [ ] Configure OIDC authentication for Radar at `radar.kind.brodsky.club`.
 - [ ] Document backups, monitoring, upgrades, and rollback procedures.
