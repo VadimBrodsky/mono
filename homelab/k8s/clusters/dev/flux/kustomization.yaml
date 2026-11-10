@@ -19,3 +19,4 @@ resources:
   - immich.yaml
   - romm.yaml
   - stash.yaml
+  - postgres.yaml

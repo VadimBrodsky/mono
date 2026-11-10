@@ -1,0 +1,20 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+
+addressType: IPv4
+endpoints:
+  - addresses:
+      - 192.168.4.222
+    conditions:
+      ready: true
+
+metadata:
+  labels:
+    endpointslice.kubernetes.io/managed-by: homelab-manual
+    kubernetes.io/service-name: postgres
+  name: postgres
+
+ports:
+  - name: postgres
+    port: 5432
+    protocol: TCP
