@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: miniflux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: miniflux
+  template:
+    metadata:
+      labels:
+        app: miniflux
+    spec:
+      containers:
+        - name: miniflux
+          image: miniflux/miniflux:2.3.5
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: MINIFLUX_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-credentials
+                  key: credential
+            - name: DATABASE_URL
+              value: postgres://postgres:$(MINIFLUX_DATABASE_PASSWORD)@postgres.postgres.svc.cluster.local:5432/miniflux?sslmode=disable
+            - name: RUN_MIGRATIONS
+              value: "1"
+            - name: CREATE_ADMIN
+              value: "1"
+            - name: ADMIN_USERNAME
+              value: vadim
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: miniflux-credentials
+                  key: credential
+          readinessProbe:
+            exec:
+              command:
+                - /usr/bin/miniflux
+                - -healthcheck
+                - auto
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          livenessProbe:
+            exec:
+              command:
+                - /usr/bin/miniflux
+                - -healthcheck
+                - auto
+            initialDelaySeconds: 30
+            periodSeconds: 60
