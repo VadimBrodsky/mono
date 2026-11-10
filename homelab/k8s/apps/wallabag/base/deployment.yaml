@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallabag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallabag
+  template:
+    metadata:
+      labels:
+        app: wallabag
+    spec:
+      containers:
+        - name: wallabag
+          image: wallabag/wallabag:2.6.15
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: SYMFONY__ENV__DATABASE_USER
+              value: w_user
+            - name: SYMFONY__ENV__DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wallabag-credentials
+                  key: credential
+            - name: SYMFONY__ENV__DATABASE_DRIVER
+              value: pdo_pgsql
+            - name: SYMFONY__ENV__DATABASE_HOST
+              value: postgres.postgres.svc.cluster.local
+            - name: SYMFONY__ENV__DATABASE_PORT
+              value: "5432"
+            - name: SYMFONY__ENV__DATABASE_NAME
+              value: wallabag
+            - name: SYMFONY__ENV__DOMAIN_NAME
+              value: https://later.kind.brodsky.club
+            - name: SYMFONY__ENV__MAILER_DSN
+              value: smtp://192.168.4.220:8025
+            - name: SYMFONY__ENV__FROM_EMAIL
+              value: wallabag@dadamix.com
+            - name: SYMFONY__ENV__SERVER_NAME
+              value: Later
+            - name: SYMFONY__ENV__FOSUSER_REGISTRATION
+              value: "false"
+            - name: SYMFONY__ENV__REDIS_HOST
+              value: redis
+            - name: SYMFONY__ENV__REDIS_PORT
+              value: "6379"
+            - name: POPULATE_DATABASE
+              value: "False"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 60
