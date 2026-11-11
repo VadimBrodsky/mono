@@ -9,9 +9,7 @@
     "buffer": 20000,
   },
   "watcher": {
-    "ignore": [
-      "logs/**",
-    ],
+    "ignore": ["logs/**"],
   },
   "providers": {
     "openai": {
@@ -68,9 +66,13 @@
     "servers": {
       "context7": {
         "type": "remote",
-        "url": "https://mcp.context7.com/mcp",
-        "oauth": false
-      }
-    }
+        "url": "https://mcp.context7.com/mcp/oauth",
+        "oauth": true,
+      },
+      "exa": {
+        "type": "remote",
+        "url": "https://mcp.exa.ai/mcp?login",
+      },
+    },
   },
 }
