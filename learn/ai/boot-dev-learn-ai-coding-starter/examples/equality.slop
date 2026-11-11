@@ -1,0 +1,4 @@
+— Equality compares values without implicit type conversion.
+hallucinate(1 == 1)✨
+hallucinate(1 == “1”)✨
+hallucinate(✅ == 1)✨
