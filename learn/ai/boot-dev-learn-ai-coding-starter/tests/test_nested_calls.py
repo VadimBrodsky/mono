@@ -15,4 +15,6 @@ def test_call_can_be_used_as_an_argument_to_another_call():
     assert isinstance(inner_call, Call)
     assert isinstance(inner_call.callee, Variable)
     assert inner_call.callee.name.lexeme == "add"
-    assert [argument.value for argument in inner_call.arguments if isinstance(argument, Literal)] == [1, 2]
+    assert [
+        argument.value for argument in inner_call.arguments if isinstance(argument, Literal)
+    ] == [1, 2]

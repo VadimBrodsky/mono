@@ -125,6 +125,13 @@ class Interpreter:
                 raise NotImplementedError(f"unknown expression {expression!r}")
 
     def unary(self, operator: Token, operand: Value) -> Value:
+        if operator.type is TokenType.BANG:
+            if not isinstance(operand, bool):
+                raise SlopRuntimeError(
+                    operator.line,
+                    f"operand of unary '!' must be a boolean, got {type_name(operand)}",
+                )
+            return not operand
         if operator.type is TokenType.MINUS:
             if not is_number(operand):
                 raise SlopRuntimeError(
@@ -132,7 +139,7 @@ class Interpreter:
                     f"operand of unary '-' must be a number, got {type_name(operand)}",
                 )
             return -operand
-        raise SlopRuntimeError(operator.line, "unary '!' is not implemented")
+        raise NotImplementedError(f"unknown unary operator {operator.lexeme}")
 
     def logical(self, left_expr: Expr, operator: Token, right_expr: Expr) -> Value:
         left = self.evaluate(left_expr)
