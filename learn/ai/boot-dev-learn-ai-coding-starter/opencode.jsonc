@@ -53,5 +53,10 @@
       "resource": "orchestrator-*",
       "effect": "allow",
     },
+    {
+      "action": "read",
+      "resource": "*.env",
+      "effect": "deny",
+    },
   ],
 }
