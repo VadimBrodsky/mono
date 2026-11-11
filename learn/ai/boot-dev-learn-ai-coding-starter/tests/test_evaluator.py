@@ -39,6 +39,10 @@ def test_division_by_zero():
     assert fails("hallucinate(1 / 0)✨") == "SlopLang runtime error at line 1: division by zero"
 
 
+def test_identifiers_with_digits_execute():
+    assert run("slop score2 = 40✨\nscore2 = score2 + 2✨\nhallucinate(score2)✨") == "42\n"
+
+
 def test_hallucinate_prints_any_number_of_arguments():
     assert run("hallucinate()✨\nhallucinate(1)✨\nhallucinate(1, “two”, ✅)✨") == (
         "\n1\n1 two ✅\n"
