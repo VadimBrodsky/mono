@@ -74,6 +74,18 @@
         "url": "https://mcp.exa.ai/mcp?login",
         "disabled": true,
       },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "bunx",
+          "--bun",
+          "@playwright/mcp@0.0.80",
+          "--isolated",
+          "--browser",
+          "chromium",
+          "--caps=vision",
+        ],
+      },
     },
   },
 }
