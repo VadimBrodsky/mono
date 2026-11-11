@@ -36,5 +36,10 @@
       "resource": "explore",
       "effect": "deny",
     },
+    {
+      "action": "subagent",
+      "resource": "orchestrator-*",
+      "effect": "allow",
+    },
   ],
 }
