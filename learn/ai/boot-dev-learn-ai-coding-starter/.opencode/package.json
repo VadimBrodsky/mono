@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "@opencode/plugin": "2.0.3"
+    "@opencode/plugin": "2.0.3",
+    "playwright": "1.63.0"
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.15"
