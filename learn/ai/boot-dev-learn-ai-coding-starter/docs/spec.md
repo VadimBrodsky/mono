@@ -121,10 +121,12 @@ Call depth is capped at 500 nested calls. Exceeding it is a runtime error (`stac
 
 ## Built-Ins
 
-`hallucinate(value)` is the only built-in. It accepts exactly one argument, prints it followed by a newline, and returns `nil`. Numbers print as base-10 digits, strings without quotes, booleans as `✅`/`❌`, nil as `nil`, and functions as `<clanker name>`.
+`hallucinate(value, ...)` is the only built-in. It accepts any number of arguments, prints their values separated by spaces followed by a newline, and returns `nil`. With no arguments, it prints a blank line. Numbers print as base-10 digits, strings without quotes, booleans as `✅`/`❌`, nil as `nil`, and functions as `<clanker name>`.
 
 ```slop
 hallucinate(3)✨   — 3
+hallucinate()✨    — blank line
+hallucinate(1, “two”)✨ — 1 two
 ```
 
 ## Operators
