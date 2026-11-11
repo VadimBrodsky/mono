@@ -9,6 +9,8 @@
 
 ## Validation
 
+After any code changes, run the Ruff formatter with `uv run ruff format`.
+
 Run all four checks from the repository root with `uv`:
 
 - `uv run pytest`
