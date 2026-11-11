@@ -22,6 +22,8 @@ The project requires Python 3.13+; `uv run` uses the locked environment in `uv.l
 
 Add a regression test when fixing a bug or changing behavior, so the affected behavior remains covered. Put tests under `tests/`.
 
+Run comparison regression tests with `uv run pytest tests/test_comparisons.py`.
+
 ## Language behavior
 
 Use [`docs/spec.md`](docs/spec.md) as the source of truth for SlopLang behavior.
