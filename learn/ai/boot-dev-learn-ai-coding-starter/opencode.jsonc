@@ -72,6 +72,7 @@
       "exa": {
         "type": "remote",
         "url": "https://mcp.exa.ai/mcp?login",
+        "disabled": true,
       },
     },
   },
