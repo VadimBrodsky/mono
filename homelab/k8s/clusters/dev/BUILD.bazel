@@ -1,13 +1,13 @@
 # homelab/k8s/clusters/dev/BUILD.bazel
 load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
-# Create kind cluster and seed its out-of-band 1Password token.
+# Create the Talos QEMU dev cluster and seed its out-of-band 1Password token.
 sh_binary(
     name = "up",
     srcs = ["up.sh"],
 )
 
-# destroy the cluster
+# Destroy the Talos QEMU dev cluster. The old kind cluster is left untouched.
 sh_binary(
     name = "down",
     srcs = ["down.sh"],

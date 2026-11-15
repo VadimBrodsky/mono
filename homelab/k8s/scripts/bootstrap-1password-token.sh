@@ -9,8 +9,8 @@ Usage: bootstrap-1password-token.sh <dev|prod> <1password-item-name> [field-name
 Example:
   bootstrap-1password-token.sh dev homelab-dev-service-account
 
-The default field name is "credential". Dev uses the kind-homelab-dev context,
-the local dev kubeconfig, and the Private vault. Prod requires HOMELAB_PROD_CONTEXT
+The default field name is "credential". Dev uses the Talos QEMU kubeconfig and
+its current context, and the Private vault. Prod requires HOMELAB_PROD_CONTEXT
 and HOMELAB_PROD_VAULT; it uses HOMELAB_PROD_KUBECONFIG if set, otherwise ~/.kube/config.
 EOF
   exit 2
@@ -25,8 +25,11 @@ field_name="${3:-credential}"
 case "$environment" in
   dev)
     script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-    context="kind-homelab-dev"
-    export KUBECONFIG="$(cd -- "$script_dir/../clusters/dev" && pwd)/.state/kubeconfig"
+    export KUBECONFIG="$(cd -- "$script_dir/../clusters/dev" && pwd)/.state/talos-kubeconfig"
+    context="${HOMELAB_DEV_CONTEXT:-}"
+    if [[ -z "$context" ]]; then
+      context="$(kubectl --kubeconfig "$KUBECONFIG" config current-context)"
+    fi
     vault="Private"
     ;;
   prod)

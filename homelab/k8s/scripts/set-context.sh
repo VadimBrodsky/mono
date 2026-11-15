@@ -1,29 +1,41 @@
 #!/usr/bin/env bash
 
 # Source this script to set KUBECONFIG in the current shell:
-#   source homelab/k8s/scripts/set-context.sh dev
+#   source homelab/k8s/scripts/set-context.sh dev|kind|prod
 
 if [[ -n "${ZSH_VERSION:-}" ]]; then
   if [[ "$ZSH_EVAL_CONTEXT" != *:file ]]; then
-    echo "Source this script with an environment: source ${(%):-%x} dev|prod" >&2
+    echo "Source this script with an environment: source ${(%):-%x} dev|kind|prod" >&2
     return 2
   fi
   SCRIPTS_DIR="${${(%):-%x}:A:h}"
 else
   if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-    echo "Source this script with an environment: source ${BASH_SOURCE[0]} dev|prod" >&2
+    echo "Source this script with an environment: source ${BASH_SOURCE[0]} dev|kind|prod" >&2
     exit 2
   fi
   SCRIPTS_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 fi
 
 if [[ $# -ne 1 ]]; then
-  echo "Usage: source homelab/k8s/scripts/set-context.sh <dev|prod>" >&2
+  echo "Usage: source homelab/k8s/scripts/set-context.sh <dev|kind|prod>" >&2
   return 2
 fi
 
 case "$1" in
   dev)
+    KUBECONFIG="$(cd -- "$SCRIPTS_DIR/../clusters/dev" && pwd)/.state/talos-kubeconfig"
+    CONTEXT="${HOMELAB_DEV_CONTEXT:-}"
+    if [[ -z "$CONTEXT" && -f "$KUBECONFIG" ]]; then
+      CONTEXT="$(kubectl --kubeconfig "$KUBECONFIG" config current-context)"
+    fi
+    if [[ -z "$CONTEXT" ]]; then
+      echo "error: Talos dev kubeconfig has no current context" >&2
+      echo "Start the Talos dev cluster first." >&2
+      return 1
+    fi
+    ;;
+  kind)
     KUBECONFIG="$(cd -- "$SCRIPTS_DIR/../clusters/dev" && pwd)/.state/kubeconfig"
     CONTEXT="kind-homelab-dev"
     ;;

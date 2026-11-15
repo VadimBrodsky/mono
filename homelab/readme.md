@@ -2,7 +2,7 @@
 
 Infrastructure and Kubernetes configuration for the **homelab**, managed alongside application code in this monorepo.
 
-The setup separates VM provisioning, cluster bootstrap, and Kubernetes workloads. A local kind cluster provides an environment for experimentation before promoting configuration to the prod cluster through Git and Flux.
+The setup separates VM provisioning, cluster bootstrap, and Kubernetes workloads. Development is migrating from kind to a local Talos QEMU VM before configuration is promoted to the prod cluster through Git and Flux.
 
 ## Folder structure
 
@@ -20,7 +20,8 @@ homelab/
     │           └── prod/
     ├── clusters/
     │   ├── dev/
-    │   │   ├── kind.yaml       # Local kind cluster configuration
+    │   │   ├── talos/          # Local Talos QEMU configuration
+    │   │   ├── kind.yaml       # Retained kind cluster configuration during migration
     │   │   └── flux/           # Dev Flux root and selected declarations
     │   └── prod/
     │       └── flux/           # Prod Flux root and selected declarations
@@ -61,9 +62,10 @@ Describes the workloads and platform services that run inside each cluster.
 
 ### Development
 
-Runs locally on the MacBook using kind.
+Runs locally on the MacBook using a Talos QEMU VM. The existing kind cluster is retained during migration and remains the Flux target until Talos validation is complete.
 
-- Cluster configuration: `k8s/clusters/dev/kind.yaml`
+- Talos configuration: `k8s/clusters/dev/talos/`
+- Legacy kind configuration: `k8s/clusters/dev/kind.yaml`
 - Flux entry point: `k8s/clusters/dev/flux/`
 - Application customizations: `k8s/apps/*/overlays/dev/`
 
@@ -83,27 +85,29 @@ container restarts and `docker compose down`. Use `docker compose down -v` only
 when you intend to delete the dev database data. Dev-only credentials are in
 the Compose file and must not be reused in production.
 
-Create the kind cluster, seed the 1Password token, then bootstrap Flux:
+Create the Talos QEMU cluster and seed the 1Password token:
 
 ```shell
 bazel run //homelab/k8s/clusters/dev:up
-bazel run //homelab/k8s/clusters/dev:flux
 ```
 
-`up` creates the cluster and kubeconfig, waits for its nodes, and seeds the
-out-of-band 1Password Service Account token. `flux` applies the official Flux
-v2.10.0 controller and CRD bundle using `kubectl`, then applies the dev Flux
-root. Flux dependencies order Gateway API CRDs, ESO, cert-manager, the
-1Password configuration, certificates, Traefik, and apps. Flux reads the public
-GitHub repository over HTTPS; no GitHub write token is required. Flux only sees
-committed changes on `main`, so push the Flux manifests to `main` before
-bootstrapping. Use `bazel run //homelab/k8s/clusters/dev:down` to stop/delete
-the cluster. The pinned Flux release requires Kubernetes 1.35.2 or newer; kind
-nodes are pinned accordingly. kind does not upgrade an existing cluster when
-`kind.yaml` changes, so recreate an older dev cluster deliberately before
-installing Flux v2.10.0.
+`up` provisions one Talos control-plane node, makes it schedulable for dev
+workloads, waits for it, and seeds the out-of-band 1Password Service Account
+token. It needs QEMU, `talosctl`, `kubectl`, `curl`, `jq`, a signed-in `op`
+session, and sudo authorization. Talos/kubeconfig credentials are stored under
+the ignored `k8s/clusters/dev/.state/`; QEMU VM state is under
+`~/.talos/homelab-dev-qemu` to keep QEMU socket paths short enough for macOS.
+The cluster uses `10.200.0.0/24` to avoid overlapping with the connected Tailscale
+route at `10.5.0.0/24`.
+`bazel run //homelab/k8s/clusters/dev:down` destroys only this Talos cluster;
+it leaves the old kind cluster intact.
 
-`up` bootstraps the 1Password Service Account token after starting kind. Create a
+During migration, the existing `flux` target still points at kind. Do not
+bootstrap Flux on Talos until the old kind Flux reconciliation has been
+deliberately stopped and the cutover is ready. The pinned Flux release requires
+Kubernetes 1.35.2 or newer; Talos dev uses Kubernetes 1.35.8.
+
+`up` bootstraps the 1Password Service Account token after starting Talos. Create a
 Service Account for the intended vault and store its token in a privileged
 1Password item that the Service Account cannot read. This step only seeds the
 token Secret; no SecretStore, ExternalSecret, or certificate resources are
@@ -144,15 +148,16 @@ flux get kustomizations -A
 flux reconcile kustomization <name> -n flux-system --with-source
 ```
 
-After starting the cluster, select its context in your current shell:
+Select Talos for dev work, or the retained kind cluster for its existing
+Flux-managed resources during migration:
 
 ```shell
 source homelab/k8s/scripts/set-context.sh dev
+source homelab/k8s/scripts/set-context.sh kind
 ```
 
-`up.sh` also selects `kind-homelab-dev` in the generated kubeconfig. Source
-`set-context.sh dev` in each new terminal where you want kubectl to use this
-cluster. For prod, set `HOMELAB_PROD_CONTEXT` (and optionally
+`dev` reads the current context from the local Talos kubeconfig. `kind` selects
+the old kind kubeconfig. For prod, set `HOMELAB_PROD_CONTEXT` (and optionally
 `HOMELAB_PROD_KUBECONFIG`) first, then source `set-context.sh prod`. Do not
 execute the script directly: a child process cannot set `KUBECONFIG` in its
 parent shell.
@@ -198,7 +203,7 @@ Provision VMs → Bootstrap Kubernetes → Install Flux → Deploy from Git
 Ongoing development:
 
 ```text
-Edit manifests → Test in kind → Update prod configuration → Merge → Flux reconciles
+Edit manifests → Test in dev → Update prod configuration → Merge → Flux reconciles
 ```
 
 Share application configuration between environments where practical. Keep differences such as image references, hostnames, resource sizing, and storage choices in environment overlays.
