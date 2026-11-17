@@ -28,7 +28,7 @@ spec:
             - --port=9280
             - --listen-address=0.0.0.0
             - --no-browser
-            - --allowed-hosts=radar.kind.brodsky.club
+            - --allowed-hosts=radar.dev.brodsky.club
             - --no-mcp
           ports:
             - name: http

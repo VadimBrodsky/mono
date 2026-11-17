@@ -4,10 +4,21 @@ umask 077
 
 cd "${BUILD_WORKSPACE_DIRECTORY:?Run this script using bazel run}/homelab/k8s/clusters/dev"
 
-export KUBECONFIG="$PWD/.state/kubeconfig"
-CONTEXT="kind-homelab-dev"
+export KUBECONFIG="$PWD/.state/talos-kubeconfig"
 
 command -v kubectl >/dev/null || { echo "error: kubectl is required" >&2; exit 1; }
+
+if [[ ! -s "$KUBECONFIG" ]]; then
+  echo "error: Talos dev kubeconfig not found at $KUBECONFIG" >&2
+  echo "Start the Talos dev cluster first." >&2
+  exit 1
+fi
+
+CONTEXT="$(kubectl config current-context)"
+if [[ "$CONTEXT" != "admin@homelab-dev-talos" ]]; then
+  echo "error: expected Talos dev context 'admin@homelab-dev-talos', got '$CONTEXT'" >&2
+  exit 1
+fi
 
 kubectl --context "$CONTEXT" wait \
   --for=condition=Ready nodes --all --timeout=120s

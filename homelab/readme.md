@@ -69,7 +69,7 @@ Runs locally on the MacBook using a Talos QEMU VM. The existing kind cluster is 
 - Flux entry point: `k8s/clusters/dev/flux/`
 - Application customizations: `k8s/apps/*/overlays/dev/`
 
-This environment is disposable and intended for testing manifests, images, and Kubernetes behaviour.
+This environment is disposable and intended for testing manifests, images, and Kubernetes behaviour. Dev Flux bootstrap targets the Talos cluster through its local kubeconfig.
 
 The dev apps use a separate PostgreSQL 15.17 instance running in OrbStack
 Docker, not the production database. Start it before using database-backed dev
@@ -102,9 +102,9 @@ route at `10.5.0.0/24`.
 `bazel run //homelab/k8s/clusters/dev:down` destroys only this Talos cluster;
 it leaves the old kind cluster intact.
 
-During migration, the existing `flux` target still points at kind. Do not
-bootstrap Flux on Talos until the old kind Flux reconciliation has been
-deliberately stopped and the cutover is ready. The pinned Flux release requires
+Do not run the `flux` target until any old kind Flux reconciliation has been
+deliberately stopped and the cutover is ready; the target installs Flux on Talos
+using `.state/talos-kubeconfig`. The pinned Flux release requires
 Kubernetes 1.35.2 or newer; Talos dev uses Kubernetes 1.35.8.
 
 `up` bootstraps the 1Password Service Account token after starting Talos. Create a
@@ -142,7 +142,7 @@ Accounts and token items for dev and prod.
 Inspect and reconcile Flux resources with the dev kubeconfig selected:
 
 ```shell
-export KUBECONFIG="$PWD/homelab/k8s/clusters/dev/.state/kubeconfig"
+export KUBECONFIG="$PWD/homelab/k8s/clusters/dev/.state/talos-kubeconfig"
 flux get sources all
 flux get kustomizations -A
 flux reconcile kustomization <name> -n flux-system --with-source

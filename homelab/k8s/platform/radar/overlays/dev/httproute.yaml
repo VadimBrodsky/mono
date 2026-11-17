@@ -10,9 +10,9 @@ spec:
       sectionName: http
     - name: traefik
       namespace: traefik
-      sectionName: https-wildcard
+      sectionName: https-dev-wildcard
   hostnames:
-    - radar.kind.brodsky.club
+    - radar.dev.brodsky.club
   rules:
     - matches:
         - path:

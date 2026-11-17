@@ -11,3 +11,5 @@ spec:
   dnsNames:
     - kind.brodsky.club
     - '*.kind.brodsky.club'
+    - dev.brodsky.club
+    - '*.dev.brodsky.club'
