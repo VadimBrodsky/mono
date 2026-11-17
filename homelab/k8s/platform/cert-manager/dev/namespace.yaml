@@ -2,3 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: traefik
+  labels:
+    # The Tailscale Operator creates a privileged proxy Pod alongside the
+    # Traefik Service in this dev-only namespace.
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/enforce-version: latest
