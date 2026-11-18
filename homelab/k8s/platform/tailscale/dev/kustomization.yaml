@@ -8,6 +8,20 @@ resources:
 patches:
   - target:
       version: v1
+      kind: Namespace
+      name: tailscale
+    patch: |-
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: tailscale
+        labels:
+          # The operator creates privileged Service proxy Pods in this
+          # dev-only namespace.
+          pod-security.kubernetes.io/enforce: privileged
+          pod-security.kubernetes.io/enforce-version: latest
+  - target:
+      version: v1
       kind: Secret
       name: operator-oauth
       namespace: tailscale

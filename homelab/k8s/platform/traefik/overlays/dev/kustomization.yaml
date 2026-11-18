@@ -8,20 +8,6 @@ resources:
 
 patches:
   - target:
-      version: v1
-      kind: Namespace
-      name: traefik
-    patch: |-
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: traefik
-        labels:
-          # Keep aligned with cert-manager/dev/namespace.yaml because both
-          # dev Flux Kustomizations include this Namespace.
-          pod-security.kubernetes.io/enforce: privileged
-          pod-security.kubernetes.io/enforce-version: latest
-  - target:
       group: apps
       version: v1
       kind: Deployment
