@@ -41,9 +41,9 @@ data:
       compaction_interval: 10m
       retention_delete_delay: 2h
     limits_config:
-      retention_period: 336h
+      retention_period: 168h
       allow_structured_metadata: true
-      max_query_lookback: 336h
+      max_query_lookback: 168h
     analytics:
       reporting_enabled: false
 ---
@@ -117,4 +117,4 @@ spec:
         storageClassName: longhorn
         resources:
           requests:
-            storage: 30Gi
+            storage: 2Gi

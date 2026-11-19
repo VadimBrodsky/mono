@@ -13,8 +13,9 @@ metrics, and pods only when the pod has
 `prometheus.io/scrape: "true"` (optionally `prometheus.io/path` and
 `prometheus.io/port`). Alloy tails container logs through the Kubernetes API
 in every namespace and sends them to Loki. Loki uses a single binary, TSDB
-schema v13, filesystem storage, and 14-day compactor retention. Prometheus also
-retains 14 days. This is a
+schema v13, filesystem storage, and 7-day compactor retention. Prometheus also
+retains 7 days. The dev Prometheus and Loki PVC requests are 1536 Mi and 2 Gi,
+respectively; retention is time-based, so monitor actual disk use. This is a
 single-replica, non-HA stack; Longhorn provides storage and its environment
 defaults determine replica count.
 
@@ -38,5 +39,5 @@ No Kubernetes Secret values are committed to Git. Prod observability and its
 secret configuration are intentionally out of scope for now.
 
 Monitor storage consumption: filesystem-backed Loki does not self-limit to
-available disk; retention deletes data older than 14 days, not in response to
+available disk; retention deletes data older than 7 days, not in response to
 disk pressure.
