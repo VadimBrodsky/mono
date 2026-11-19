@@ -25,6 +25,8 @@ spec:
       containers:
         - name: wallabag
           image: wallabag/wallabag:2.6.15
+          securityContext:
+            allowPrivilegeEscalation: false
           volumeMounts:
             - name: wallabag-data
               mountPath: /var/www/wallabag/data

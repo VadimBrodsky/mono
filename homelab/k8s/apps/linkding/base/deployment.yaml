@@ -19,6 +19,8 @@ spec:
       containers:
         - name: linkding
           image: sissbruecker/linkding:1.47.0-alpine
+          securityContext:
+            allowPrivilegeEscalation: false
           volumeMounts:
             - name: linkding-data
               mountPath: /etc/linkding/data
