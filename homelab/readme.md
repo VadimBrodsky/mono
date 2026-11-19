@@ -262,7 +262,8 @@ docker run --rm -it authelia/authelia:4.39.28 authelia crypto hash generate pbkd
 ```
 
 Generate the OIDC signing key with OpenSSL and upload the PEM output as the
-`oidc-issuer-private-key.pem` file attachment on the `authelia-dev` item:
+`oidc-issuer-private-key.pem` file attachment at the top level of the
+`authelia-dev` item (not inside a named section):
 
 ```shell
 openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048
