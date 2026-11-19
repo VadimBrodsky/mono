@@ -9,20 +9,14 @@ spec:
       sectionName: http
     - name: traefik
       namespace: traefik
-      sectionName: https
+      sectionName: https-dev-wildcard
   hostnames:
-    - kind.brodsky.club
+    - whoami.dev.brodsky.club
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /whoami
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: /
+            value: /
       backendRefs:
         - name: whoami
           port: 80

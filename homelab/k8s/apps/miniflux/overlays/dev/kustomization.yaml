@@ -14,10 +14,10 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: rss.kind.brodsky.club
+        value: miniflux.dev.brodsky.club
       - op: replace
         path: /spec/parentRefs/0/sectionName
-        value: https-wildcard
+        value: https-dev-wildcard
       - op: add
         path: /spec/parentRefs/0
         value:

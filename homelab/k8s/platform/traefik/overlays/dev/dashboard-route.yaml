@@ -8,9 +8,9 @@ spec:
     - name: traefik
       sectionName: http
     - name: traefik
-      sectionName: https-wildcard
+      sectionName: https-dev-wildcard
   hostnames:
-    - traefik.kind.brodsky.club
+    - traefik.dev.brodsky.club
   rules:
     - matches:
         - path:

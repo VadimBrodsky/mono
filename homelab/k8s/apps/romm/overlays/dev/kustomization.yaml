@@ -14,7 +14,7 @@ patches:
     patch: |-
       - op: replace
         path: /spec/hostnames/0
-        value: kind.brodsky.club
+        value: romm.dev.brodsky.club
       - op: add
         path: /spec/parentRefs/0
         value:
@@ -22,13 +22,5 @@ patches:
           namespace: traefik
           sectionName: http
       - op: replace
-        path: /spec/rules/0/matches/0/path/value
-        value: /romm
-      - op: add
-        path: /spec/rules/0/filters
-        value:
-          - type: URLRewrite
-            urlRewrite:
-              path:
-                type: ReplacePrefixMatch
-                replacePrefixMatch: /
+        path: /spec/parentRefs/1/sectionName
+        value: https-dev-wildcard
