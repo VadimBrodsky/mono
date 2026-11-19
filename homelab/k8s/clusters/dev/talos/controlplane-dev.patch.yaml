@@ -16,3 +16,14 @@ machine:
           - bind
           - rshared
           - rw
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+  - address: 1.1.1.1
+    protocol: Do53
+  - address: 8.8.8.8
+    protocol: Do53
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: true
