@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "radar": {
+        "type": "remote",
+        "url": "https://radar.dev.brodsky.club/mcp-readonly"
+      }
+    }
+  }
+}
