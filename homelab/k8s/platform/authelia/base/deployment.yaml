@@ -24,6 +24,8 @@ spec:
       containers:
         - name: authelia
           image: authelia/authelia:4.39.28
+          command:
+            - authelia
           args:
             - --config=/config/configuration.yml
           env:
