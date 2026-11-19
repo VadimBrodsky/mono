@@ -24,4 +24,5 @@ resources:
   - stash.yaml
   - postgres.yaml
   - linkding.yaml
+  - miniflux.yaml
   - wallabag.yaml
