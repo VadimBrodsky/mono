@@ -12,6 +12,9 @@ spec:
       labels:
         app: wallabag
     spec:
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
       volumes:
         - name: wallabag-data
           persistentVolumeClaim:
