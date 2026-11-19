@@ -10,5 +10,6 @@ resources:
   - kube-state-metrics.yaml
   - alertmanager.yaml
   - loki.yaml
+  - tempo.yaml
   - alloy.yaml
   - grafana.yaml

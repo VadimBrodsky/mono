@@ -27,3 +27,4 @@ resources:
   - linkding.yaml
   - miniflux.yaml
   - wallabag.yaml
+  - cupdate.yaml

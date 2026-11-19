@@ -8,15 +8,216 @@ data:
     datasources:
       - name: Prometheus
         type: prometheus
+        uid: prometheus
         access: proxy
         url: http://prometheus.observability.svc:9090
         isDefault: true
         editable: false
       - name: Loki
         type: loki
+        uid: loki
         access: proxy
         url: http://loki.observability.svc:3100
         editable: false
+        jsonData:
+          derivedFields:
+            - matcherRegex: '"traceId":"(\w+)"'
+              name: traceId
+              datasourceUid: tempo
+              url: $${__value.raw}
+      - name: Tempo
+        type: tempo
+        uid: tempo
+        access: proxy
+        url: http://tempo.observability.svc:3200
+        editable: false
+      - name: Cupdate
+        uid: cupdate
+        type: yesoreyeram-infinity-datasource
+        access: proxy
+        url: http://cupdate.cupdate.svc.cluster.local:8080
+        editable: false
+        jsonData:
+          allowedHosts:
+            - http://cupdate.cupdate.svc.cluster.local:8080
+          auth_method: none
+          customHealthCheckEnabled: true
+          customHealthCheckUrl: /readyz
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-cupdate-dashboard-provider
+data:
+  cupdate.yaml: |
+    apiVersion: 1
+    providers:
+      - name: Cupdate
+        folder: Applications
+        type: file
+        disableDeletion: true
+        editable: false
+        options:
+          path: /etc/grafana/dashboards/cupdate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-cupdate-dashboard
+data:
+  cupdate.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": false,
+      "panels": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 10
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "reduceOptions": {
+              "calcs": ["lastNotNull"],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true
+          },
+          "targets": [
+            {
+              "expr": "cupdate_worker_processing_images",
+              "refId": "A"
+            }
+          ],
+          "title": "Images being processed",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 8,
+            "y": 0
+          },
+          "id": 2,
+          "targets": [
+            {
+              "expr": "cupdate_worker_queue_length",
+              "refId": "A"
+            }
+          ],
+          "title": "Queued images",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 8,
+            "x": 16,
+            "y": 0
+          },
+          "id": 3,
+          "targets": [
+            {
+              "expr": "increase(cupdate_worker_processed_images_total[$__rate_interval])",
+              "refId": "A"
+            }
+          ],
+          "title": "Images processed",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 7
+          },
+          "id": 4,
+          "options": {
+            "showLabels": false,
+            "showTime": true,
+            "sortOrder": "Descending",
+            "wrapLogMessage": true
+          },
+          "targets": [
+            {
+              "expr": "{app=\"cupdate\"} | json | level != \"debug\"",
+              "refId": "A"
+            }
+          ],
+          "title": "Cupdate logs",
+          "type": "logs"
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": ["cupdate"],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "title": "Cupdate",
+      "uid": "cupdate",
+      "version": 1
+    }
 ---
 apiVersion: v1
 kind: Service
@@ -70,6 +271,8 @@ spec:
               value: "false"
             - name: GF_USERS_ALLOW_SIGN_UP
               value: "false"
+            - name: GF_PLUGINS_PREINSTALL
+              value: yesoreyeram-infinity-datasource@4.1.8
           resources:
             requests:
               cpu: 100m
@@ -87,12 +290,25 @@ spec:
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
               readOnly: true
+            - name: cupdate-dashboard-provider
+              mountPath: /etc/grafana/provisioning/dashboards/cupdate.yaml
+              subPath: cupdate.yaml
+              readOnly: true
+            - name: cupdate-dashboard
+              mountPath: /etc/grafana/dashboards/cupdate
+              readOnly: true
             - name: tmp
               mountPath: /tmp
       volumes:
         - name: datasources
           configMap:
             name: grafana-datasources
+        - name: cupdate-dashboard-provider
+          configMap:
+            name: grafana-cupdate-dashboard-provider
+        - name: cupdate-dashboard
+          configMap:
+            name: grafana-cupdate-dashboard
         - name: tmp
           emptyDir: {}
   volumeClaimTemplates:

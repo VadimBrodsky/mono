@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cupdate-config
+data:
+  CUPDATE_API_ADDRESS: "0.0.0.0"
+  CUPDATE_CACHE_PATH: /var/run/data/cachev1.boltdb
+  CUPDATE_DB_PATH: /var/run/data/dbv1.sqlite
+  CUPDATE_LOGOS_PATH: /var/run/data/logos
+  CUPDATE_WEB_ADDRESS: https://cupdate.dev.brodsky.club
+  CUPDATE_OTEL_TARGET: tempo.observability.svc.cluster.local:4317
+  CUPDATE_OTEL_INSECURE: "true"

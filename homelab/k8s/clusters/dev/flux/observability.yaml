@@ -24,3 +24,7 @@ spec:
       kind: ExternalSecret
       name: alertmanager-pushover
       namespace: observability
+    - apiVersion: apps/v1
+      kind: StatefulSet
+      name: tempo
+      namespace: observability

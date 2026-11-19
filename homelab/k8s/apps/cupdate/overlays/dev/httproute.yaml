@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: cupdate
+  namespace: cupdate
+spec:
+  parentRefs:
+    - name: traefik
+      namespace: traefik
+      sectionName: https-dev-wildcard
+  hostnames:
+    - cupdate.dev.brodsky.club
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: cupdate
+          port: 8080

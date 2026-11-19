@@ -1,8 +1,8 @@
 # Observability
 
 This platform service currently deploys to dev only: Prometheus, Alertmanager,
-Loki, Grafana, Grafana Alloy, node-exporter, and kube-state-metrics from pinned
-container images (no Helm). Grafana is private; the dev overlay creates an
+Loki, Tempo, Grafana, Grafana Alloy, node-exporter, and kube-state-metrics from
+pinned container images (no Helm). Grafana is private; the dev overlay creates an
 HTTPRoute at `grafana.dev.brodsky.club` through the existing private
 Traefik/Tailscale path. There is no prod deployment or route.
 Point its DNS A record to the same Tailscale IPv4 address as the Radar dev
@@ -18,6 +18,13 @@ retains 7 days. The dev Prometheus and Loki PVC requests are 1536 Mi and 2 Gi,
 respectively; retention is time-based, so monitor actual disk use. This is a
 single-replica, non-HA stack; Longhorn provides storage and its environment
 defaults determine replica count.
+
+Tempo accepts OTLP/gRPC on its in-cluster Service and stores traces on a 2 Gi
+Longhorn PVC with 24-hour retention. Grafana provisions Tempo and the Infinity
+data source for Cupdate, along with a Cupdate dashboard and Loki-to-Tempo trace
+links. The Cupdate pod opts in to Prometheus scraping and pushes traces to
+`tempo.observability.svc.cluster.local:4317`. These additions are dev-only;
+Tempo's local storage is not intended for prod.
 
 ## 1Password secrets
 
