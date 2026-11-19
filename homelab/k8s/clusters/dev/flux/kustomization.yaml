@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - sync.yaml
+  - longhorn.yaml
   - gateway-api.yaml
   - external-secrets.yaml
   - cert-manager.yaml

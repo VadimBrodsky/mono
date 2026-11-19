@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - sync.yaml
+  - longhorn.yaml
   - biggie.yaml
   - unraid.yaml
   - audiobookshelf.yaml

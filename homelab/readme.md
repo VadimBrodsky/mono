@@ -102,6 +102,14 @@ route at `10.5.0.0/24`.
 `bazel run //homelab/k8s/clusters/dev:down` destroys only this Talos cluster;
 it leaves the old kind cluster intact.
 
+Longhorn 1.13.0 is installed by Flux from the pinned upstream Kubernetes
+manifest under `k8s/platform/longhorn/`; the dev and prod overlays use the
+`longhorn` StorageClass as the cluster default. Dev uses one replica because it
+has one node. The Talos dev node includes the required iSCSI/util-linux
+extensions, privileged pod-security labels, and kubelet mount for
+`/var/mnt/longhorn`. The dev cluster is disposable, so Longhorn data on its
+current VM disk is not durable across cluster destruction.
+
 Do not run the `flux` target until any old kind Flux reconciliation has been
 deliberately stopped and the cutover is ready; the target installs Flux on Talos
 using `.state/talos-kubeconfig`. The pinned Flux release requires
@@ -176,6 +184,8 @@ Runs on Proxmox VMs.
 
 - Infrastructure configuration: `terraform/proxmox/`
 - Flux entry point: `k8s/clusters/prod/flux/`
+- Longhorn uses three replicas in prod; this requires at least three eligible
+  storage nodes with sufficient local disk capacity.
 - Flux reconciles each selected prod app overlay from `k8s/apps/` independently.
 - Application customizations: `k8s/apps/*/overlays/prod/`
 - Flux bootstrap configuration: `k8s/clusters/prod/flux/`

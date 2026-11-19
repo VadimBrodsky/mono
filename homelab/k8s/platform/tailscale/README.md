@@ -17,3 +17,8 @@ the existing `radar.dev.brodsky.club` host and use the existing dev certificate.
 After Flux reconciles, use the service's `EXTERNAL-IP` (its Tailscale IPv4
 address) for the `radar.dev.brodsky.club` DNS A record. That address is
 reachable only by tailnet devices. No Funnel exposure is configured.
+
+The Longhorn UI uses the same Tailscale-only Traefik HTTPS entry point at
+`longhorn.dev.brodsky.club`. Point that hostname's DNS A record at the same
+Tailscale IPv4 address; do not point it at a public address. The route is not
+attached to the plain-HTTP listener.
