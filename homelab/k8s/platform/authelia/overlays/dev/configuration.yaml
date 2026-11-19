@@ -7,6 +7,8 @@ data:
   configuration.yml: |
     server:
       address: 'tcp://:9091'
+      # Skip the Docker healthcheck file write; Kubernetes probes still use /api/health.
+      disable_healthcheck: true
 
     log:
       level: info
