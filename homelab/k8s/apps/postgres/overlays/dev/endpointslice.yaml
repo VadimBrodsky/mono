@@ -4,8 +4,8 @@ kind: EndpointSlice
 addressType: IPv4
 endpoints:
   - addresses:
-      # OrbStack's host.docker.internal address from the kind node.
-      - 0.250.250.254
+      # Talos QEMU's host gateway; the dev PostgreSQL container publishes port 15432 here.
+      - 10.200.0.1
     conditions:
       ready: true
 
