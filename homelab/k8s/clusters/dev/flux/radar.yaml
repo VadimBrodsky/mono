@@ -13,6 +13,7 @@ spec:
   timeout: 10m
   dependsOn:
     - name: traefik
+    - name: observability
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment

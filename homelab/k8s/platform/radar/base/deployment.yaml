@@ -29,7 +29,9 @@ spec:
             - --listen-address=0.0.0.0
             - --no-browser
             - --allowed-hosts=radar.dev.brodsky.club
-            - --no-mcp
+            - --prometheus-url=http://prometheus.observability.svc:9090
+            - --prometheus-single-cluster
+            - --mcp-read-only
           ports:
             - name: http
               containerPort: 9280
