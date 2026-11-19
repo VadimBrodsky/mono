@@ -50,6 +50,9 @@ spec:
             - name: credentials
               mountPath: /secrets
               readOnly: true
+            - name: users
+              mountPath: /users
+              readOnly: true
             - name: data
               mountPath: /data
             - name: tmp
@@ -85,6 +88,10 @@ spec:
         - name: credentials
           secret:
             secretName: authelia-credentials
+            defaultMode: 0440
+        - name: users
+          secret:
+            secretName: authelia-users
             defaultMode: 0440
         - name: data
           persistentVolumeClaim:

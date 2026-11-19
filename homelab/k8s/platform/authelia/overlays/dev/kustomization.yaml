@@ -5,4 +5,5 @@ resources:
   - ../../base
   - configuration.yaml
   - external-secret.yaml
+  - users-external-secret.yaml
   - httproute.yaml

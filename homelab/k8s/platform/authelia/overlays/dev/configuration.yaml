@@ -15,7 +15,7 @@ data:
 
     authentication_backend:
       file:
-        path: /secrets/users_database.yml
+        path: /users/users_database.yml
         watch: true
         password:
           algorithm: argon2
@@ -61,7 +61,8 @@ data:
             client_secret: {{ secret "/secrets/linkding_client_secret_hash" | mindent 10 "|" | msquote }}
             public: false
             authorization_policy: one_factor
-            require_pkce: false
+            require_pkce: true
+            pkce_challenge_method: S256
             redirect_uris:
               - https://linkding.dev.brodsky.club/oidc/callback/
             scopes:

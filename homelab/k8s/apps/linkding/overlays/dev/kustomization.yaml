@@ -51,6 +51,10 @@ patches:
                     value: https://linkding.dev.brodsky.club
                   - name: LD_ENABLE_OIDC
                     value: "True"
+                  - name: LD_DISABLE_LOGIN_FORM
+                    value: "True"
+                  - name: OIDC_USE_PKCE
+                    value: "True"
                   - name: OIDC_OP_AUTHORIZATION_ENDPOINT
                     value: https://auth.dev.brodsky.club/api/oidc/authorization
                   - name: OIDC_OP_TOKEN_ENDPOINT
