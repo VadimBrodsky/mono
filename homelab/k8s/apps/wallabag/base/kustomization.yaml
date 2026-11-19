@@ -5,6 +5,8 @@ namespace: wallabag
 
 resources:
   - namespace.yaml
+  - data-pvc.yaml
+  - images-pvc.yaml
   - deployment.yaml
   - service.yaml
   - redis-deployment.yaml

@@ -12,9 +12,21 @@ spec:
       labels:
         app: wallabag
     spec:
+      volumes:
+        - name: wallabag-data
+          persistentVolumeClaim:
+            claimName: wallabag-data
+        - name: wallabag-images
+          persistentVolumeClaim:
+            claimName: wallabag-images
       containers:
         - name: wallabag
           image: wallabag/wallabag:2.6.15
+          volumeMounts:
+            - name: wallabag-data
+              mountPath: /var/www/wallabag/data
+            - name: wallabag-images
+              mountPath: /var/www/wallabag/web/assets/images
           ports:
             - name: http
               containerPort: 80

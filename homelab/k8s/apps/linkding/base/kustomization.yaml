@@ -5,6 +5,7 @@ namespace: linkding
 
 resources:
   - namespace.yaml
+  - data-pvc.yaml
   - deployment.yaml
   - service.yaml
   - httproute.yaml

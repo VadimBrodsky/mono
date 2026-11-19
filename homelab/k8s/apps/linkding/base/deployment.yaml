@@ -12,9 +12,16 @@ spec:
       labels:
         app: linkding
     spec:
+      volumes:
+        - name: linkding-data
+          persistentVolumeClaim:
+            claimName: linkding-data
       containers:
         - name: linkding
           image: sissbruecker/linkding:1.47.0-alpine
+          volumeMounts:
+            - name: linkding-data
+              mountPath: /etc/linkding/data
           ports:
             - name: http
               containerPort: 9090
