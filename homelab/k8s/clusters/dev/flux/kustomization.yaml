@@ -23,3 +23,5 @@ resources:
   - romm.yaml
   - stash.yaml
   - postgres.yaml
+  - linkding.yaml
+  - wallabag.yaml
