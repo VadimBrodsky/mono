@@ -11,10 +11,6 @@ data:
     log:
       level: info
 
-    identity_validation:
-      reset_password:
-        disable: true
-
     authentication_backend:
       file:
         path: /secrets/users_database.yml
@@ -28,6 +24,8 @@ data:
             parallelism: 4
             key_length: 32
             salt_length: 16
+      password_reset:
+        disable: true
 
     access_control:
       default_policy: deny
