@@ -50,11 +50,11 @@ patches:
                   - name: OIDC_OP_AUTHORIZATION_ENDPOINT
                     value: https://auth.dev.brodsky.club/api/oidc/authorization
                   - name: OIDC_OP_TOKEN_ENDPOINT
-                    value: https://auth.dev.brodsky.club/api/oidc/token
+                    value: http://authelia.authelia.svc.cluster.local:9091/api/oidc/token
                   - name: OIDC_OP_USER_ENDPOINT
-                    value: https://auth.dev.brodsky.club/api/oidc/userinfo
+                    value: http://authelia.authelia.svc.cluster.local:9091/api/oidc/userinfo
                   - name: OIDC_OP_JWKS_ENDPOINT
-                    value: https://auth.dev.brodsky.club/jwks.json
+                    value: http://authelia.authelia.svc.cluster.local:9091/jwks.json
                   - name: OIDC_RP_CLIENT_ID
                     value: linkding
                   - name: OIDC_RP_CLIENT_SECRET
