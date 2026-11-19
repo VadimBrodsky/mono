@@ -11,6 +11,10 @@ data:
     log:
       level: info
 
+    identity_validation:
+      reset_password:
+        disable: true
+
     authentication_backend:
       file:
         path: /secrets/users_database.yml
@@ -46,7 +50,6 @@ data:
 
     identity_providers:
       oidc:
-        issuer: https://auth.dev.brodsky.club
         jwks:
           - key_id: authelia
             algorithm: RS256
