@@ -7,7 +7,7 @@ spec:
   parentRefs:
     - name: traefik
       namespace: traefik
-      sectionName: websecure
+      sectionName: https-dev-wildcard
   hostnames:
     - grafana.dev.brodsky.club
   rules:
