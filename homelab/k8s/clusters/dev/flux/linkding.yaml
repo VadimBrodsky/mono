@@ -14,3 +14,4 @@ spec:
   dependsOn:
     - name: traefik
     - name: dev-postgres
+    - name: authelia

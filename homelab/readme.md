@@ -202,6 +202,64 @@ The prod Flux root selects only its declared apps. Prod platform and 1Password
 reconciliation remain separate from this app selection. The Flux CLI remains
 optional for status and reconciliation commands.
 
+## Authentication
+
+Authelia is configured as the shared authentication provider for cluster apps.
+Its dev manifests are not yet reconciled. Manage its Kubernetes resources with
+Kustomize and Flux; do not use Helm.
+
+- Start in dev with Authelia's file authentication backend and SQLite storage.
+  SQLite is an embedded database, so this does not require a separate database
+  server. Persist its database file on a Longhorn PVC. Dev Longhorn data is
+  lost when the disposable dev cluster is destroyed.
+- Linkding is the first planned client, using native OIDC with Authelia at
+  `auth.dev.brodsky.club`. Do not add other app integrations until this test is
+  validated.
+- For production, use PostgreSQL for Authelia storage. This is the intended
+  backend but is not deployed; production database provisioning and
+  session-storage requirements must be addressed before promotion.
+- Keep the file user database and Authelia secret values out of Git; store them
+  in 1Password and synchronize them with External Secrets Operator.
+
+The dev ExternalSecret expects these fields in the `authelia-dev` item in the
+`homelab-dev` 1Password vault:
+
+| Field | Contents |
+| --- | --- |
+| `users-database` | Authelia YAML user database, including the user email used by Linkding |
+| `session-secret` | Random session signing secret |
+| `storage-encryption-key` | Random SQLite encryption key |
+| `oidc-hmac-secret` | Random OIDC HMAC secret |
+| `oidc-issuer-private-key` | PEM-encoded RSA private key for signing OIDC tokens |
+| `linkding-client-secret` | Raw OIDC client secret consumed by Linkding |
+| `linkding-client-secret-hash` | PBKDF2-SHA512 hash of that same OIDC client secret, consumed by Authelia |
+
+Populate every field before reconciling the dev Authelia Flux Kustomization;
+the ExternalSecret health check keeps that Kustomization from becoming Ready
+until the fields are available.
+
+Generate user password hashes with the pinned Authelia image, entering the
+password at the interactive prompt rather than putting it in shell history:
+
+```shell
+docker run --rm -it authelia/authelia:4.39.28 authelia crypto hash generate argon2
+```
+
+Generate the Linkding client secret hash the same way, using the PBKDF2-SHA512
+algorithm, and put the raw secret and its hash in their respective 1Password
+fields:
+
+```shell
+docker run --rm -it authelia/authelia:4.39.28 authelia crypto hash generate pbkdf2 --variant sha512
+```
+
+Generate the OIDC signing key with OpenSSL and store its PEM contents in the
+`oidc-issuer-private-key` field:
+
+```shell
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048
+```
+
 ## Workflow
 
 Initial prod-cluster setup:

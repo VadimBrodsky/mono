@@ -14,6 +14,7 @@ resources:
   - traefik.yaml
   - radar.yaml
   - observability.yaml
+  - authelia.yaml
   - whoami.yaml
   - biggie.yaml
   - unraid.yaml
