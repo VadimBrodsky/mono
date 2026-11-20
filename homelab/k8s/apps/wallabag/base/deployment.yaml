@@ -24,7 +24,7 @@ spec:
             claimName: wallabag-images
       containers:
         - name: wallabag
-          image: wallabag/wallabag:2.6.15
+          image: wallabag/wallabag:2.6.17
           securityContext:
             allowPrivilegeEscalation: false
           volumeMounts:

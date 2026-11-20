@@ -25,7 +25,7 @@ spec:
 
       containers:
         - name: traefik
-          image: traefik:v3.7.17
+          image: traefik:v3.7.19
 
           args:
             - --providers.kubernetesgateway=true
