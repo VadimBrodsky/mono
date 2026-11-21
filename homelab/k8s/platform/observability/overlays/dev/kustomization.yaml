@@ -9,3 +9,13 @@ resources:
 images:
   - name: grafana/grafana
     newTag: "12.4.14"
+
+configMapGenerator:
+  - name: grafana-cupdate-dashboard
+    namespace: observability
+    files:
+      - cupdate-provider.yaml
+      - cupdate.json
+
+patches:
+  - path: grafana-cupdate.yaml

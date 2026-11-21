@@ -1,0 +1,71 @@
+{
+  "editable": false,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "$prometheus" },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 10 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": { "h": 7, "w": 8, "x": 0, "y": 0 },
+      "id": 1,
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "targets": [
+        { "expr": "cupdate_worker_processing_images{namespace=\"cupdate\"}", "refId": "A" }
+      ],
+      "title": "Images being processed",
+      "type": "gauge"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "$prometheus" },
+      "gridPos": { "h": 7, "w": 8, "x": 8, "y": 0 },
+      "id": 2,
+      "targets": [
+        { "expr": "cupdate_worker_queue_length{namespace=\"cupdate\"}", "refId": "A" }
+      ],
+      "title": "Queued images",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "$prometheus" },
+      "gridPos": { "h": 7, "w": 8, "x": 16, "y": 0 },
+      "id": 3,
+      "targets": [
+        { "expr": "increase(cupdate_worker_processed_images_total{namespace=\"cupdate\"}[$__rate_interval])", "refId": "A" }
+      ],
+      "title": "Images processed",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "loki", "uid": "$loki" },
+      "gridPos": { "h": 10, "w": 24, "x": 0, "y": 7 },
+      "id": 4,
+      "options": { "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [
+        { "expr": "{instance=~\"cupdate/cupdate-.*:cupdate\"}", "refId": "A" }
+      ],
+      "title": "Cupdate logs",
+      "type": "logs"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["cupdate"],
+  "templating": {
+    "list": [
+      { "name": "prometheus", "label": "Prometheus", "type": "datasource", "query": "prometheus", "refresh": 1 },
+      { "name": "loki", "label": "Loki", "type": "datasource", "query": "loki", "refresh": 1 }
+    ]
+  },
+  "time": { "from": "now-6h", "to": "now" },
+  "title": "Cupdate",
+  "uid": "cupdate",
+  "version": 1
+}
