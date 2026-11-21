@@ -24,7 +24,8 @@ homelab/
     │   │   ├── kind.yaml       # Retained kind cluster configuration during migration
     │   │   └── flux/           # Dev Flux root and selected declarations
     │   └── prod/
-    │       └── flux/           # Prod Flux root and selected declarations
+    │       ├── flux-platform/  # Initial prod platform-only reconciliation
+    │       └── flux/           # Existing prod app selection; not applied by prod:flux
     └── platform/               # Shared cluster services and controllers
         ├── flux/install/       # Pinned Flux controller and CRD bundle
         ├── gateway-api/        # Cluster-wide Gateway API CRDs
@@ -32,7 +33,7 @@ homelab/
         └── traefik/            # Traefik controller and Gateway
 ```
 
-This tree summarizes the directory layout rather than listing every manifest. The `bootstrap/` and `terraform/proxmox/` directories are currently placeholders.
+This tree summarizes the directory layout rather than listing every manifest.
 
 ## Responsibilities
 
@@ -180,27 +181,112 @@ kubectl --context kind-homelab-dev -n traefik port-forward deployment/traefik 90
 
 ### Prod
 
-Runs on Proxmox VMs.
+OpenTofu manages three VMs on Biggie, each with 2 vCPUs, 4 GiB RAM, a 32 GiB
+OS disk, and a 48 GiB Longhorn disk. All three are schedulable Talos control
+planes. etcd and the three Longhorn replicas can tolerate one VM going
+down, but all replicas share one physical host and NVMe. The Proxmox boot
+mirror is degraded and its repair is deferred. Keep an off-host recovery
+plan before migrating production data.
 
-- Infrastructure configuration: `terraform/proxmox/`
-- Flux entry point: `k8s/clusters/prod/flux/`
-- Longhorn uses three replicas in prod; this requires at least three eligible
-  storage nodes with sufficient local disk capacity.
-- Flux reconciles each selected prod app overlay from `k8s/apps/` independently.
-- Application customizations: `k8s/apps/*/overlays/prod/`
-- Flux bootstrap configuration: `k8s/clusters/prod/flux/`
+#### LAN addressing
 
-Apply the pinned Flux controller and CRD bundle, then apply the cluster Flux
-root. These steps use `kubectl` and do not require the Flux CLI:
+The VMs use untagged `vmbr0`. UniFi serves DHCP from `192.168.4.6` through
+`192.168.4.254`; the Talos VM MACs below match the UniFi reservations and
+`terraform/proxmox/cluster.json`.
+
+| Address | Assignment | Type |
+| --- | --- | --- |
+| `192.168.4.1` | UniFi gateway | Existing |
+| `192.168.4.4` | Kubernetes API, TCP `6443` | Talos Layer 2 VIP, outside DHCP |
+| `192.168.4.5` | Traefik app ingress, TCP `80`/`443` | Planned separate LAN service IP, outside DHCP |
+| `192.168.4.63` | Tailscale LXC | Existing |
+| `192.168.4.187` | `pods` VM | Existing; not managed by OpenTofu |
+| `192.168.4.199` | Unraid VM | Existing |
+| `192.168.4.200` | Biggie Proxmox host | Existing |
+| `192.168.4.201` | Proxmox Backup Server VM | Existing |
+| `192.168.4.210` | `talos-prod-01` (VM `210`) | DHCP reservation: `02:54:41:4c:04:d2` |
+| `192.168.4.211` | `talos-prod-02` (VM `211`) | DHCP reservation: `02:54:41:4c:04:d3` |
+| `192.168.4.212` | `talos-prod-03` (VM `212`) | DHCP reservation: `02:54:41:4c:04:d4` |
+| `192.168.4.222` | PostgreSQL LXC | Existing; leave in place |
+| `192.168.4.223` | MySQL LXC | Existing |
+
+`kubectl` uses `.4`; `talosctl` uses the three node addresses directly for
+bootstrap and recovery. No kube-vip or Tailscale Operator is needed for this
+setup. For app cutover, add individual LAN DNS records for `<app>.brodsky.club`
+pointing to `.5`, starting with a smoke-test name. Keep public app addresses
+and WAN forwarding disabled. Use dev's cert-manager workflow (Cloudflare
+DNS-01 with Let's Encrypt staging first, then trusted issuance) with a separate
+prod `*.brodsky.club` certificate. ESO will read the prod Cloudflare token from
+`homelab-prod`. The Traefik service load balancer, certificate, and smoke-test
+route are not enabled by the initial platform bootstrap.
+
+#### Prerequisites
+
+- On the operator Mac, install OpenTofu `1.13.9`, `talosctl` compatible with
+  Talos `1.14.x`, `kubectl`, `jq`, and the 1Password CLI. Sign in to `op`.
+- Trust Biggie's Proxmox cluster CA on the Mac before running OpenTofu. Get
+  `/etc/pve/pve-root-ca.pem` from Biggie over trusted SSH. The API endpoint is
+  `https://192.168.4.200:8006/`; do not disable certificate verification.
+- Biggie needs `local:iso/talos-metal-amd64.iso`, the Talos Image Factory
+  `v1.14.6` standard amd64 ISO for the schematic in `cluster.json`. The
+  uploaded ISO and a fresh Image Factory download both hashed to
+  `c746f7f7035b9b603417beedecb3612fd5ee52938cd51c7f7a3b1639f4e05ba3`.
+  The VMs use OVMF without Secure Boot. The matching installer retains
+  `iscsi-tools`, `util-linux-tools`, and `qemu-guest-agent`.
+- Give both `rofu@pve` and its privilege-separated token `rofu@pve!homelab`
+  scoped grants: allocate, configure, audit and power-manage only `/vms/210`
+  through `/vms/212`; audit and allocate space on `/storage/biggie-npool`;
+  audit `/storage/local`; use `/sdn/zones/localnetwork/vmbr0`; and read
+  `/nodes/biggie`. No root or provider SSH credentials are required.
+- In the operator-only **Selfhosted** vault, use `rofu@pve` with fields
+  `token-id` (the full token ID) and `token-secret`. Add
+  `homelab-prod-opentofu` with a strong random `passphrase` (at least 16
+  characters) and `homelab-prod-service-account` with a `credential` field.
+  This service account must have read access to **homelab-prod** only, not
+  Selfhosted.
+- Generate the prod Talos secrets bundle **once**, as a 1Password Document.
+  Do not regenerate it for retries or recovery. From a Bash shell:
+
+  ```bash
+  set -o pipefail
+  talosctl gen secrets --talos-version v1.14.6 --output-file - |
+    op document create - --vault Selfhosted \
+      --title homelab-prod-talos-secrets --file-name secrets.yaml
+  ```
+
+#### Bring-up
+
+From the monorepo root, run each step separately:
 
 ```shell
-kubectl apply -k homelab/k8s/platform/flux/install
-kubectl apply -k homelab/k8s/clusters/prod/flux
+bazel run //homelab/k8s/clusters/prod:plan
+bazel run //homelab/k8s/clusters/prod:up
+bazel run //homelab/k8s/clusters/prod:flux
 ```
 
-The prod Flux root selects only its declared apps. Prod platform and 1Password
-reconciliation remain separate from this app selection. The Flux CLI remains
-optional for status and reconciliation commands.
+1. `plan` saves an encrypted plan. Review it: the initial plan should create
+   only the three Talos VMs. `up` accepts only VM creation and no-op changes,
+   and requires a typed confirmation. There is no prod `down` target.
+2. `up` applies the saved plan, then uses `talosctl` to configure the VMs from
+   `k8s/clusters/prod/talos/controlplane.patch.yaml`, the node inventory, and
+   the 1Password secrets bundle. It bootstraps etcd, verifies the cluster, and
+   seeds the ESO token using the generated prod kubeconfig. If VM creation
+   succeeded but bootstrap or token seeding failed, use
+   `bazel run //homelab/k8s/clusters/prod:up -- --resume`.
+   If VM creation itself failed, review a fresh plan instead. If etcd bootstrap
+   was attempted but no member now responds, inspect etcd before attempting
+   recovery; the script intentionally refuses to bootstrap a second time.
+3. Once the platform manifests are on `main`, `flux` installs the pinned Flux
+   bundle and reconciles `k8s/clusters/prod/flux-platform/` (Gateway API,
+   ESO, cert-manager, and Longhorn). It does **not** apply the existing app
+   selection at `k8s/clusters/prod/flux/`. Bring over apps and DNS records
+   explicitly, without running both environments against the same data.
+
+OpenTofu state and plans, the bootstrap marker, and generated admin configs
+are in the ignored `k8s/clusters/prod/.state/`. Back up the encrypted
+`proxmox.tfstate` off-host and keep the passphrase recoverable in 1Password.
+For the context helper, use `HOMELAB_PROD_CONTEXT=admin@homelab-prod-talos` and
+set `HOMELAB_PROD_KUBECONFIG` to that directory's `talos-kubeconfig`.
 
 ## Authentication
 

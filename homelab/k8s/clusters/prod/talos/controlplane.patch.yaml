@@ -1,0 +1,44 @@
+# The bootstrap wrapper substitutes @API_VIP@ from terraform/proxmox/cluster.json.
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  node.kubernetes.io/exclude-from-external-load-balancers:
+    $patch: delete
+taints:
+  node-role.kubernetes.io/control-plane:
+    $patch: delete
+nodeIP:
+  validSubnets:
+    - 192.168.4.0/24
+    - "!@API_VIP@/32"
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.serial == "talos-os"
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn
+provisioning:
+  diskSelector:
+    match: disk.serial == "talos-longhorn"
+  minSize: 40GiB
+filesystem:
+  type: ext4
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: net0
+selector:
+  match: "true"
+---
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: net0
+---
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: "@API_VIP@"
+link: net0

@@ -1,0 +1,5 @@
+/k8s/clusters/prod/.state/
+/terraform/proxmox/.terraform/
+/terraform/proxmox/*.tfstate*
+/terraform/proxmox/*.tfplan
+/terraform/proxmox/crash*.log

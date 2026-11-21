@@ -1,0 +1,13 @@
+{
+  "name": "homelab-prod-talos",
+  "api_vip": "192.168.4.4",
+  "talos_version": "v1.14.6",
+  "kubernetes_version": "1.35.8",
+  "schematic": "88d1f7a5c4f1d3aba7df787c448c1d3d008ed29cfb34af53fa0df4336a56040b",
+  "iso": "local:iso/talos-metal-amd64.iso",
+  "nodes": {
+    "talos-prod-01": { "id": 210, "ip": "192.168.4.210", "mac": "02:54:41:4c:04:d2" },
+    "talos-prod-02": { "id": 211, "ip": "192.168.4.211", "mac": "02:54:41:4c:04:d3" },
+    "talos-prod-03": { "id": 212, "ip": "192.168.4.212", "mac": "02:54:41:4c:04:d4" }
+  }
+}

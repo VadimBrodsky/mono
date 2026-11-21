@@ -1,0 +1,19 @@
+load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
+
+sh_binary(
+    name = "plan",
+    srcs = ["prod.sh"],
+    args = ["plan"],
+)
+
+sh_binary(
+    name = "up",
+    srcs = ["prod.sh"],
+    args = ["up"],
+)
+
+sh_binary(
+    name = "flux",
+    srcs = ["prod.sh"],
+    args = ["flux"],
+)
