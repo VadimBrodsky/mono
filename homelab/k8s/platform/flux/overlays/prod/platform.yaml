@@ -20,7 +20,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m
-  path: ./homelab/k8s/platform/external-secrets/base
+  path: ./homelab/k8s/platform/external-secrets/overlays/prod
   prune: true
   sourceRef:
     kind: GitRepository

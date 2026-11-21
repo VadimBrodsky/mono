@@ -3,18 +3,7 @@ kind: Kustomization
 
 resources:
   - sync.yaml
-  - longhorn.yaml
-  - gateway-api.yaml
-  - external-secrets.yaml
-  - cert-manager.yaml
-  - onepassword.yaml
-  - tailscale.yaml
-  - certificates-staging.yaml
-  - certificates-production.yaml
-  - traefik.yaml
-  - radar.yaml
-  - observability.yaml
-  - authelia.yaml
+  - platform.yaml
   - whoami.yaml
   - biggie.yaml
   - unraid.yaml

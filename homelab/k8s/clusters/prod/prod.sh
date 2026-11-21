@@ -91,8 +91,8 @@ case "${1:-}" in
     for controller in source-controller kustomize-controller; do
       kube -n flux-system rollout status "deployment/$controller" --timeout=300s
     done
-    kube apply -k "$prod/flux-platform"
-    for component in prod-platform gateway-api-crds external-secrets cert-manager longhorn; do
+    kube apply -k "$prod/flux"
+    for component in flux-system prod-platform gateway-api-crds external-secrets cert-manager longhorn; do
       kube -n flux-system wait --for=condition=Ready "kustomization/$component" --timeout=1200s
     done
     ;;

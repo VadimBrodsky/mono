@@ -37,7 +37,7 @@ kubectl --context "$CONTEXT" -n flux-system wait \
 kubectl --context "$CONTEXT" -n flux-system wait \
   --for=condition=Ready kustomization/flux-system --timeout=1800s
 
-for kustomization in gateway-api-crds external-secrets cert-manager; do
+for kustomization in dev-platform gateway-api-crds external-secrets cert-manager; do
   kubectl --context "$CONTEXT" -n flux-system wait \
     --for=condition=Ready "kustomization/${kustomization}" --timeout=1800s
 done

@@ -3,12 +3,4 @@ kind: Kustomization
 
 resources:
   - sync.yaml
-  - longhorn.yaml
-  - biggie.yaml
-  - unraid.yaml
-  - audiobookshelf.yaml
-  - grimmory.yaml
-  - immich.yaml
-  - romm.yaml
-  - stash.yaml
-  - postgres.yaml
+  - platform.yaml

@@ -24,8 +24,7 @@ homelab/
     │   │   ├── kind.yaml       # Retained kind cluster configuration during migration
     │   │   └── flux/           # Dev Flux root and selected declarations
     │   └── prod/
-    │       ├── flux-platform/  # Initial prod platform-only reconciliation
-    │       └── flux/           # Existing prod app selection; not applied by prod:flux
+    │       └── flux/           # Prod Flux root; selects platform only
     └── platform/               # Shared cluster services and controllers
         ├── flux/install/       # Pinned Flux controller and CRD bundle
         ├── gateway-api/        # Cluster-wide Gateway API CRDs
@@ -68,6 +67,7 @@ Runs locally on the MacBook using a Talos QEMU VM. The existing kind cluster is 
 - Talos configuration: `k8s/clusters/dev/talos/`
 - Legacy kind configuration: `k8s/clusters/dev/kind.yaml`
 - Flux entry point: `k8s/clusters/dev/flux/`
+- Platform selection: `k8s/platform/flux/overlays/dev/`, via the `dev-platform` Flux Kustomization
 - Application customizations: `k8s/apps/*/overlays/dev/`
 
 This environment is disposable and intended for testing manifests, images, and Kubernetes behaviour. Dev Flux bootstrap targets the Talos cluster through its local kubeconfig.
@@ -170,6 +170,30 @@ the old kind kubeconfig. For prod, set `HOMELAB_PROD_CONTEXT` (and optionally
 `HOMELAB_PROD_KUBECONFIG`) first, then source `set-context.sh prod`. Do not
 execute the script directly: a child process cannot set `KUBECONFIG` in its
 parent shell.
+
+#### Moving an existing dev cluster to `dev-platform`
+
+If a dev cluster already reconciles `main`, protect the existing platform
+Kustomizations **before merging** the move. Otherwise the old Flux root may
+prune them and their workloads before the new owner takes over. No migration
+step is needed for a new cluster.
+
+On each active dev cluster, check the context first, then annotate the
+existing objects:
+
+```sh
+kubectl config current-context
+kubectl -n flux-system annotate kustomization \
+  longhorn gateway-api-crds external-secrets cert-manager onepassword-config \
+  tailscale certificates-staging certificates-production traefik radar \
+  observability authelia kustomize.toolkit.fluxcd.io/prune=disabled --overwrite
+```
+
+After the merge, wait for both `flux-system` and `dev-platform` to reconcile
+the new revision. Use `flux tree kustomization` to verify the moved objects
+are owned by `dev-platform` and are no longer in the `flux-system` inventory.
+Then remove the temporary protection by repeating the annotation command
+with `kustomize.toolkit.fluxcd.io/prune-` instead of `.../prune=disabled --overwrite`.
 
 #### Traefik
 
@@ -277,10 +301,12 @@ bazel run //homelab/k8s/clusters/prod:flux
    was attempted but no member now responds, inspect etcd before attempting
    recovery; the script intentionally refuses to bootstrap a second time.
 3. Once the platform manifests are on `main`, `flux` installs the pinned Flux
-   bundle and reconciles `k8s/clusters/prod/flux-platform/` (Gateway API,
-   ESO, cert-manager, and Longhorn). It does **not** apply the existing app
-   selection at `k8s/clusters/prod/flux/`. Bring over apps and DNS records
-   explicitly, without running both environments against the same data.
+   bundle and applies the single root at `k8s/clusters/prod/flux/`. That root
+   self-syncs and selects `k8s/platform/flux/overlays/prod/` (Gateway API, ESO,
+   cert-manager, and Longhorn). App declarations remain in
+   `k8s/clusters/prod/flux/` but are not selected or reconciled. Bring over
+   apps and DNS records explicitly, without running both environments against
+   the same data.
 
 OpenTofu state and plans, the bootstrap marker, and generated admin configs
 are in the ignored `k8s/clusters/prod/.state/`. Back up the encrypted
