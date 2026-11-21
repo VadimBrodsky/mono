@@ -5,3 +5,7 @@ resources:
   - ../../base
   - grafana-route.yaml
   - external-secrets.yaml
+
+images:
+  - name: grafana/grafana
+    newTag: "12.4.14"
