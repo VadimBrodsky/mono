@@ -8,7 +8,6 @@ The setup separates VM provisioning, cluster bootstrap, and Kubernetes workloads
 
 ```text
 homelab/
-├── bootstrap/                  # Cluster installation and initial setup
 ├── terraform/
 │   └── proxmox/                # Proxmox VM provisioning
 └── k8s/
@@ -20,11 +19,14 @@ homelab/
     │           └── prod/
     ├── clusters/
     │   ├── dev/
+    │   │   ├── scripts/        # Dev lifecycle and access scripts
     │   │   ├── talos/          # Local Talos QEMU configuration
     │   │   ├── kind.yaml       # Retained kind cluster configuration during migration
     │   │   └── flux/           # Dev Flux root and selected declarations
-    │   └── prod/
-    │       └── flux/           # Prod Flux root; selects platform only
+    │   ├── prod/
+    │   │   ├── scripts/        # Prod lifecycle, Talos bootstrap, and access scripts
+    │   │   └── flux/           # Prod Flux root; selects platform only
+    │   └── lib/                # Shared shell helpers
     └── platform/               # Shared cluster services and controllers
         ├── flux/install/       # Pinned Flux controller and CRD bundle
         ├── gateway-api/        # Cluster-wide Gateway API CRDs
@@ -42,11 +44,10 @@ Provisions the VMs that will host the prod Kubernetes cluster.
 
 Intended responsibilities include VM resources, disks, network configuration, and initial VM settings. Kubernetes application deployment belongs under `k8s/`, not Terraform.
 
-### Cluster bootstrap: `bootstrap/`
+### Cluster operations: `k8s/clusters/<cluster>/scripts/`
 
-Contains the automation needed to turn provisioned VMs into a working Kubernetes cluster.
-
-Intended responsibilities include installing Kubernetes, joining nodes, configuring cluster access, and initially installing Flux.
+Contains each cluster's provisioning, bootstrap, Flux, and access scripts.
+Run its Bazel targets from the cluster directory with `bazel run :<target>`.
 
 ### Kubernetes configuration: `k8s/`
 
@@ -132,19 +133,17 @@ The default 1Password field label is `credential`; pass another field label to
 bazel run //homelab/k8s/clusters/dev:up -- token
 ```
 
-The helper targets the dev context using the local kubeconfig and `Private` vault. It
-looks up the item's `credential` field by name, checks the 1Password CLI session
-with `op whoami`, and requires `op`, `jq`, and `kubectl`. For prod, set its
-context and vault before running the same helper with the prod item name:
+The dev helper uses the local Talos kubeconfig and the `Private` vault. The
+prod helper uses the local prod Talos kubeconfig and the `Selfhosted` vault.
+Both require a signed-in `op` session, `jq`, and `kubectl`. `up` seeds the
+token automatically; to reseed it separately, run the matching target:
 
 ```shell
-HOMELAB_PROD_CONTEXT='<prod-kubectl-context>' \
-HOMELAB_PROD_VAULT='<prod-1password-vault>' \
-  homelab/k8s/scripts/bootstrap-1password-token.sh prod '<prod-service-account-item>'
+bazel run //homelab/k8s/clusters/dev:seed-eso
+bazel run //homelab/k8s/clusters/prod:seed-eso
 ```
 
-Prod uses `HOMELAB_PROD_KUBECONFIG` if set, otherwise `~/.kube/config`. The
-helper writes the token only to a temporary file and creates the bootstrap
+The helper writes the token only to a temporary file and creates the bootstrap
 Secret in the cluster; the token is not stored in Git. Keep separate Service
 Accounts and token items for dev and prod.
 
@@ -161,15 +160,21 @@ Select Talos for dev work, or the retained kind cluster for its existing
 Flux-managed resources during migration:
 
 ```shell
-source homelab/k8s/scripts/set-context.sh dev
-source homelab/k8s/scripts/set-context.sh kind
+source homelab/k8s/clusters/dev/scripts/set-context.sh
+source homelab/k8s/clusters/dev/scripts/set-context.sh kind
+source homelab/k8s/clusters/prod/scripts/set-context.sh
 ```
 
-`dev` reads the current context from the local Talos kubeconfig. `kind` selects
-the old kind kubeconfig. For prod, set `HOMELAB_PROD_CONTEXT` (and optionally
-`HOMELAB_PROD_KUBECONFIG`) first, then source `set-context.sh prod`. Do not
-execute the script directly: a child process cannot set `KUBECONFIG` in its
-parent shell.
+Dev reads the current context from its local Talos kubeconfig unless you pass
+`kind`. Prod defaults to `admin@homelab-prod-talos` in its generated Talos
+kubeconfig. `HOMELAB_PROD_CONTEXT` and `HOMELAB_PROD_KUBECONFIG` are optional
+overrides for the sourced prod helper. Source these helpers rather than
+running them through Bazel: a child process cannot set `KUBECONFIG` in the
+calling shell.
+
+To open K9s on dev Talos (not kind) in read-only mode without changing
+your shell context, run `bazel run :k9s` from `homelab/k8s/clusters/dev/`,
+or `bazel run //homelab/k8s/clusters/dev:k9s` from the monorepo root.
 
 #### Moving an existing dev cluster to `dev-platform`
 
@@ -311,8 +316,9 @@ bazel run //homelab/k8s/clusters/prod:flux
 OpenTofu state and plans, the bootstrap marker, and generated admin configs
 are in the ignored `k8s/clusters/prod/.state/`. Back up the encrypted
 `proxmox.tfstate` off-host and keep the passphrase recoverable in 1Password.
-For the context helper, use `HOMELAB_PROD_CONTEXT=admin@homelab-prod-talos` and
-set `HOMELAB_PROD_KUBECONFIG` to that directory's `talos-kubeconfig`.
+To open K9s on prod in read-only mode without changing your shell context,
+run `bazel run :k9s` from `homelab/k8s/clusters/prod/`, or
+`bazel run //homelab/k8s/clusters/prod:k9s` from the monorepo root.
 
 ## Authentication
 

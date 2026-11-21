@@ -72,12 +72,9 @@ case "${1:-}" in
     tofu_run state list | diff - <(
       jq -r '.nodes | keys[] | "proxmox_virtual_environment_vm.talos[\"\(.)\"]"' "$tofu_dir/cluster.json"
     ) || die "OpenTofu state does not contain exactly the three prod VMs"
-    bash "$homelab/bootstrap/talos-prod.sh" \
+    bash "$prod/scripts/bootstrap-talos.sh" \
       "$state_dir" "$tofu_dir/cluster.json" "$prod/talos/controlplane.patch.yaml"
-    HOMELAB_PROD_KUBECONFIG="$kubeconfig" \
-      HOMELAB_PROD_CONTEXT="$context" HOMELAB_PROD_VAULT=Selfhosted \
-      bash "$homelab/k8s/scripts/bootstrap-1password-token.sh" \
-        prod homelab-prod-service-account
+    "$prod/scripts/seed-eso.sh"
     ;;
   flux)
     [[ $# == 1 ]] || die "usage: prod:flux"

@@ -4,17 +4,27 @@ load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 # Create the Talos QEMU dev cluster and seed its out-of-band 1Password token.
 sh_binary(
     name = "up",
-    srcs = ["up.sh"],
+    srcs = ["scripts/up.sh"],
 )
 
 # Destroy the Talos QEMU dev cluster. The old kind cluster is left untouched.
 sh_binary(
     name = "down",
-    srcs = ["down.sh"],
+    srcs = ["scripts/down.sh"],
 )
 
 # Install Flux and begin cluster reconciliation.
 sh_binary(
     name = "flux",
-    srcs = ["flux.sh"],
+    srcs = ["scripts/flux.sh"],
+)
+
+sh_binary(
+    name = "k9s",
+    srcs = ["scripts/k9s.sh"],
+)
+
+sh_binary(
+    name = "seed-eso",
+    srcs = ["scripts/seed-eso.sh"],
 )

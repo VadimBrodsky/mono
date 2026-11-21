@@ -111,5 +111,4 @@ export KUBECONFIG="$kubeconfig"
 kubectl wait --for=condition=Ready nodes --all --timeout=180s
 kubectl get nodes
 
-"$workspace/homelab/k8s/scripts/bootstrap-1password-token.sh" \
-  dev homelab-dev-service-account "$@"
+"$repo_dir/scripts/seed-eso.sh" "$@"
