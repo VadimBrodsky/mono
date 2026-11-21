@@ -2,20 +2,17 @@ load("@rules_shell//shell:sh_binary.bzl", "sh_binary")
 
 sh_binary(
     name = "plan",
-    srcs = ["scripts/prod.sh"],
-    args = ["plan"],
+    srcs = ["scripts/plan.sh"],
 )
 
 sh_binary(
     name = "up",
-    srcs = ["scripts/prod.sh"],
-    args = ["up"],
+    srcs = ["scripts/up.sh"],
 )
 
 sh_binary(
     name = "flux",
-    srcs = ["scripts/prod.sh"],
-    args = ["flux"],
+    srcs = ["scripts/flux.sh"],
 )
 
 sh_binary(
