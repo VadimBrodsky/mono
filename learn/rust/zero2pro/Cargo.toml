@@ -1,7 +1,21 @@
 [package]
-name = "zero2pro"
+name = "zero2prod"
 version = "0.1.0"
 edition = "2024"
+
+[lib]
+# we could use any path here, but we are following the community convention
+# we could specify a library name using the `name` field.
+# if unspecified cargo will default to `package.name`,
+# which is what we want
+path = "src/lib.rs"
+
+# double square brackets: its an array in TOML
+# we can only have one library in a project
+# but we can have multiple binaries
+[[bin]]
+path = "src/main.rs"
+name = "zero2prod"
 
 [dependencies]
 actix-web = "4.18.1"
